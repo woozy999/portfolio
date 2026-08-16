@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jordan Cole — Jukebox Portfolio</title>
+<meta name="description" content="Portfolio of Jordan Cole, presented as a jukebox. Pick a track to see a project.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --noir:#141017;
+    --noir-deep:#0b090d;
+    --walnut:#4A2F22;
+    --walnut-dark:#301C13;
+    --walnut-light:#6B4530;
+    --cream:#F3E7D0;
+    --cream-dim: rgba(243,231,208,0.62);
+    --pink:#FF4FA0;
+    --cyan:#42E8C6;
+    --amber:#FFB13C;
+    --chrome:#D8DBE2;
+    --ease: cubic-bezier(.22,1,.36,1);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--noir);
+    color:var(--cream);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+  a{color:inherit;}
+  button{font-family:inherit; cursor:pointer;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
+
+  .marquee-font{ font-family:'Bungee', cursive; }
+  .mono{ font-family:'Space Mono', monospace; }
+
+  /* ===== NAV ===== */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(20,16,23,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(243,231,208,0.1);
+    padding:18px 0;
+  }
+  nav .wrap{ display:flex; justify-content:space-between; align-items:center; }
+  .brand{
+    font-family:'Bungee', cursive;
+    font-size:16px;
+    letter-spacing:0.02em;
+    color:var(--cream);
+  }
+  .brand span{ color:var(--pink); }
+  .bulbs{ display:flex; gap:7px; }
+  .bulbs i{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--amber);
+    display:block;
+    box-shadow:0 0 8px var(--amber);
+    animation: blink 1.6s ease-in-out infinite;
+  }
+  .bulbs i:nth-child(2){ animation-delay:.2s; background:var(--pink); box-shadow:0 0 8px var(--pink);}
+  .bulbs i:nth-child(3){ animation-delay:.4s; background:var(--cyan); box-shadow:0 0 8px var(--cyan);}
+  .bulbs i:nth-child(4){ animation-delay:.6s; }
+  .bulbs i:nth-child(5){ animation-delay:.8s; background:var(--pink); box-shadow:0 0 8px var(--pink);}
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:.25;} }
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;
+    padding:100px 0 80px;
+    text-align:center;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:'';
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 500px 300px at 50% 0%, rgba(255,79,160,0.16), transparent 70%),
+      radial-gradient(ellipse 500px 300px at 50% 100%, rgba(66,232,198,0.12), transparent 70%);
+    pointer-events:none;
+  }
+  .hero-eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-family:'Bungee', cursive;
+    font-size:clamp(36px, 7vw, 76px);
+    line-height:1.05;
+    color:var(--cream);
+    text-shadow:
+      0 0 12px rgba(255,79,160,0.35),
+      0 0 34px rgba(255,79,160,0.18);
+  }
+  .hero h1 .accent{ color:var(--pink); }
+  .hero p.sub{
+    max-width:480px;
+    margin:22px auto 0;
+    color:var(--cream-dim);
+    font-size:16.5px;
+  }
+
+  /* jukebox cabinet illustration */
+  .cabinet{
+    position:relative;
+    width:min(320px, 70vw);
+    height:220px;
+    margin:52px auto 0;
+  }
+  .cabinet-arch{
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, var(--walnut-light), var(--walnut));
+    border-radius:160px 160px 18px 18px;
+    box-shadow:
+      inset 0 0 0 6px var(--walnut-dark),
+      0 30px 60px -20px rgba(0,0,0,0.6);
+  }
+  .cabinet-glass{
+    position:absolute;
+    top:22px; left:22px; right:22px; bottom:70px;
+    border-radius:120px 120px 10px 10px;
+    background: radial-gradient(circle at 50% 30%, rgba(255,79,160,0.35), rgba(66,232,198,0.18) 60%, rgba(11,9,13,0.7) 100%);
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 0 40px rgba(255,79,160,0.35);
+    animation: glassglow 3.4s ease-in-out infinite;
+  }
+  @keyframes glassglow{
+    0%,100%{ box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 0 30px rgba(255,79,160,0.28); }
+    50%{ box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 0 46px rgba(66,232,198,0.4); }
+  }
+  .cabinet-slats{
+    position:absolute;
+    left:22px; right:22px; bottom:14px; height:44px;
+    border-radius:8px;
+    background: repeating-linear-gradient(90deg, var(--walnut-dark) 0 4px, var(--walnut) 4px 10px);
+    box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
+  }
+
+  .scroll-cue{
+    margin-top:56px;
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.1em;
+    color:var(--cream-dim);
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .scroll-cue svg{ animation: bob 1.6s ease-in-out infinite; }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);} }
+
+  /* ===== SELECT SECTION ===== */
+  .select-section{ padding:40px 0 120px; }
+  .select-head{ text-align:center; margin-bottom:48px; }
+  .select-head .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:12px;
+  }
+  .select-head h2{
+    font-family:'Bungee', cursive;
+    font-size:clamp(24px, 4vw, 38px);
+  }
+  .select-head p{
+    color:var(--cream-dim);
+    margin-top:12px;
+    font-size:14.5px;
+  }
+
+  .panel{
+    background: linear-gradient(180deg, var(--walnut-light), var(--walnut-dark));
+    border-radius:22px;
+    padding:32px;
+    box-shadow:
+      inset 0 0 0 2px rgba(0,0,0,0.25),
+      0 40px 80px -30px rgba(0,0,0,0.6);
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:14px;
+  }
+  @media (max-width:640px){
+    .grid{ grid-template-columns:repeat(2, 1fr); }
+  }
+
+  .track-btn{
+    position:relative;
+    background: linear-gradient(180deg, #211823, #17111B);
+    border:1px solid rgba(243,231,208,0.08);
+    border-radius:12px;
+    padding:16px 12px 14px;
+    color:var(--cream);
+    text-align:left;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    min-height:112px;
+    transition:transform .18s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease);
+  }
+  .track-btn .code{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    color:var(--code-color, var(--pink));
+    letter-spacing:0.05em;
+  }
+  .track-btn .title{
+    font-size:13.5px;
+    font-weight:600;
+    line-height:1.3;
+  }
+  .track-btn::after{
+    content:'';
+    position:absolute; left:12px; right:12px; bottom:10px;
+    height:3px;
+    border-radius:2px;
+    background: var(--code-color, var(--pink));
+    opacity:0.5;
+    box-shadow:0 0 8px var(--code-color, var(--pink));
+  }
+  .track-btn:not(:disabled):hover{
+    transform:translateY(-3px);
+    border-color: var(--code-color, var(--pink));
+    box-shadow: 0 10px 26px -10px var(--code-color, rgba(255,79,160,0.6));
+  }
+  .track-btn:not(:disabled):active{
+    transform:translateY(1px) scale(0.98);
+  }
+  .track-btn:disabled{
+    opacity:0.35;
+    cursor:default;
+  }
+  .track-btn:disabled .title{ color:var(--cream-dim); }
+  .track-btn:disabled::after{ opacity:0.15; }
+
+  /* ===== MODAL: now playing ===== */
+  .overlay{
+    position:fixed; inset:0;
+    background:rgba(11,9,13,0.82);
+    backdrop-filter:blur(6px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    z-index:200;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s var(--ease);
+  }
+  .overlay.is-open{ opacity:1; pointer-events:auto; }
+
+  .player-card{
+    width:100%;
+    max-width:560px;
+    background: linear-gradient(180deg, #201823, #150F18);
+    border:1px solid rgba(243,231,208,0.1);
+    border-radius:22px;
+    padding:36px;
+    position:relative;
+    transform:translateY(24px) scale(0.97);
+    opacity:0;
+    transition:transform .4s var(--ease), opacity .4s var(--ease);
+  }
+  .overlay.is-open .player-card{ transform:translateY(0) scale(1); opacity:1; }
+
+  .player-close{
+    position:absolute; top:18px; right:18px;
+    width:32px; height:32px;
+    border-radius:50%;
+    background:rgba(243,231,208,0.08);
+    border:none;
+    color:var(--cream);
+    font-size:16px;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .2s var(--ease);
+  }
+  .player-close:hover{ background:rgba(243,231,208,0.18); }
+
+  .player-stage{
+    display:flex;
+    align-items:center;
+    gap:28px;
+  }
+  @media (max-width:480px){
+    .player-stage{ flex-direction:column; text-align:center; }
+  }
+
+  .vinyl-wrap{
+    position:relative;
+    width:140px; height:140px;
+    flex-shrink:0;
+  }
+  .vinyl{
+    width:140px; height:140px;
+    border-radius:50%;
+    background:
+      repeating-radial-gradient(circle at center, #0c0a0e 0 3px, #1a1520 3px 6px);
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.7);
+    position:relative;
+    transform:translateX(-60px);
+    opacity:0;
+  }
+  .vinyl-label{
+    position:absolute; top:50%; left:50%;
+    width:52px; height:52px;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:var(--code-color, var(--pink));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    color:#141017;
+    font-weight:700;
+  }
+  .tonearm{
+    position:absolute;
+    top:-14px; right:-6px;
+    width:70px; height:70px;
+    transform-origin: 85% 15%;
+    transform: rotate(-32deg);
+    opacity:0;
+  }
+
+  .player-card.is-loading .vinyl{
+    animation: vinyl-in .5s var(--ease) forwards;
+  }
+  .player-card.is-loading .vinyl-label{
+    animation: spin 1.1s linear infinite;
+    animation-delay:.5s;
+  }
+  .player-card.is-loading .tonearm{
+    animation: arm-in .4s var(--ease) forwards .55s;
+  }
+  @keyframes vinyl-in{
+    to{ transform:translateX(0); opacity:1; }
+  }
+  @keyframes spin{ to{ transform:translate(-50%,-50%) rotate(360deg); } }
+  @keyframes arm-in{
+    to{ transform:rotate(-6deg); opacity:1; }
+  }
+
+  .player-card.is-ready .vinyl{ transform:translateX(0); opacity:1; }
+  .player-card.is-ready .vinyl-label{ animation: spin 3s linear infinite; }
+  .player-card.is-ready .tonearm{ transform:rotate(-6deg); opacity:1; }
+
+  .now-playing-label{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    margin-bottom:10px;
+    min-height:14px;
+  }
+  .player-info h3{
+    font-family:'Bungee', cursive;
+    font-size:20px;
+    line-height:1.25;
+    margin-bottom:10px;
+    opacity:0;
+    transition:opacity .3s var(--ease);
+  }
+  .player-info p.desc{
+    font-size:14.5px;
+    color:var(--cream-dim);
+    opacity:0;
+    transition:opacity .3s var(--ease) .05s;
+    margin-bottom:16px;
+  }
+  .player-card.is-ready .player-info h3,
+  .player-card.is-ready .player-info p.desc{ opacity:1; }
+
+  .tag-row{
+    display:flex; gap:8px; flex-wrap:wrap;
+    margin-bottom:20px;
+    opacity:0;
+    transition:opacity .3s var(--ease) .1s;
+  }
+  .player-card.is-ready .tag-row{ opacity:1; }
+  .tag-row span{
+    font-family:'Space Mono', monospace;
+    font-size:10.5px;
+    padding:5px 10px;
+    border-radius:100px;
+    background:rgba(243,231,208,0.08);
+    color:var(--cream-dim);
+  }
+
+  .player-actions{
+    display:flex; gap:12px; flex-wrap:wrap;
+    opacity:0;
+    transition:opacity .3s var(--ease) .15s;
+  }
+  .player-card.is-ready .player-actions{ opacity:1; }
+
+  .btn{
+    font-family:'Space Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.03em;
+    padding:12px 20px;
+    border-radius:100px;
+    border:1px solid rgba(243,231,208,0.2);
+    background:transparent;
+    color:var(--cream);
+    transition:border-color .25s var(--ease), background .25s var(--ease), transform .2s var(--ease);
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn-solid{
+    background:var(--code-color, var(--pink));
+    border-color:var(--code-color, var(--pink));
+    color:#141017;
+  }
+  .btn-solid:hover{ filter:brightness(1.08); }
+
+  /* ===== FULLSCREEN PROJECT VIEW ===== */
+  .full-overlay{
+    position:fixed; inset:0;
+    background:var(--noir-deep);
+    z-index:300;
+    overflow-y:auto;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .4s var(--ease);
+  }
+  .full-overlay.is-open{ opacity:1; pointer-events:auto; }
+
+  .full-inner{
+    max-width:760px;
+    margin:0 auto;
+    padding:90px 28px 100px;
+  }
+  .full-close{
+    position:fixed; top:22px; right:28px;
+    width:40px; height:40px;
+    border-radius:50%;
+    background:rgba(243,231,208,0.08);
+    border:1px solid rgba(243,231,208,0.15);
+    color:var(--cream);
+    font-size:18px;
+    display:flex; align-items:center; justify-content:center;
+    z-index:310;
+    transition:background .2s var(--ease);
+  }
+  .full-close:hover{ background:rgba(243,231,208,0.18); }
+
+  .full-code{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color: var(--code-color, var(--pink));
+    margin-bottom:16px;
+  }
+  .full-inner h1{
+    font-family:'Bungee', cursive;
+    font-size:clamp(28px, 5vw, 46px);
+    line-height:1.15;
+    margin-bottom:24px;
+  }
+  .full-inner .full-desc{
+    font-size:16px;
+    color:var(--cream-dim);
+    line-height:1.7;
+    max-width:600px;
+    margin-bottom:32px;
+  }
+  .full-tags{
+    display:flex; gap:10px; flex-wrap:wrap;
+    margin-bottom:36px;
+  }
+  .full-tags span{
+    font-family:'Space Mono', monospace;
+    font-size:11.5px;
+    padding:7px 14px;
+    border-radius:100px;
+    background:rgba(243,231,208,0.08);
+    border:1px solid rgba(243,231,208,0.1);
+  }
+  .full-art{
+    width:100%; height:260px;
+    border-radius:18px;
+    background: linear-gradient(135deg, var(--code-color, var(--pink)), transparent 70%), var(--walnut-dark);
+    margin-bottom:36px;
+    opacity:0.85;
+  }
+  .full-inner .full-actions{ display:flex; gap:14px; flex-wrap:wrap; }
+
+  footer{
+    text-align:center;
+    padding:44px 0 60px;
+    font-family:'Space Mono', monospace;
+    font-size:11.5px;
+    color:var(--cream-dim);
+  }
+
+  :focus-visible{
+    outline:2px solid var(--cyan);
+    outline-offset:3px;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">Jordan Cole<span> // portfolio.fm</span></div>
+    <div class="bulbs"><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-eyebrow mono">Now spinning</div>
+    <h1>Pick a <span class="accent">track</span>,<br>see a project.</h1>
+    <p class="sub">I'm Jordan Cole, a designer &amp; developer. Instead of a boring list, my work is loaded into the jukebox below — press a button to drop the needle on a project.</p>
+
+    <div class="cabinet" aria-hidden="true">
+      <div class="cabinet-arch">
+        <div class="cabinet-glass"></div>
+        <div class="cabinet-slats"></div>
+      </div>
+    </div>
+
+    <div class="scroll-cue">
+      <span>Scroll to the machine</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </div>
+  </div>
+</header>
+
+<section class="select-section" id="jukebox">
+  <div class="wrap">
+    <div class="select-head">
+      <div class="eyebrow mono">Select a track</div>
+      <h2>The selector panel</h2>
+      <p>Lit buttons are loaded with a project. Dim ones are still queued up.</p>
+    </div>
+
+    <div class="panel">
+      <div class="grid" id="trackGrid"></div>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Jordan Cole — built with plain HTML, CSS &amp; JS</footer>
+
+<!-- Now Playing modal -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Now playing project">
+  <div class="player-card" id="playerCard">
+    <button class="player-close" id="closeModal" aria-label="Close">✕</button>
+    <div class="now-playing-label mono" id="nowPlayingLabel"></div>
+    <div class="player-stage">
+      <div class="vinyl-wrap">
+        <div class="tonearm" aria-hidden="true">
+          <svg width="70" height="70" viewBox="0 0 70 70">
+            <circle cx="58" cy="10" r="7" fill="#D8DBE2"/>
+            <rect x="20" y="7" width="38" height="5" rx="2.5" fill="#D8DBE2"/>
+            <circle cx="20" cy="9.5" r="4" fill="#FF4FA0"/>
+          </svg>
+        </div>
+        <div class="vinyl">
+          <div class="vinyl-label" id="vinylLabel">—</div>
+        </div>
+      </div>
+      <div class="player-info">
+        <h3 id="playerTitle"></h3>
+        <p class="desc" id="playerDesc"></p>
+        <div class="tag-row" id="playerTags"></div>
+        <div class="player-actions">
+          <button class="btn" id="anotherTrackBtn">Play another track</button>
+          <button class="btn btn-solid" id="viewFullBtn">View full album →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Fullscreen project view -->
+<div class="full-overlay" id="fullOverlay">
+  <button class="full-close" id="fullClose" aria-label="Close project">✕</button>
+  <div class="full-inner">
+    <div class="full-code mono" id="fullCode"></div>
+    <h1 id="fullTitle"></h1>
+    <div class="full-art" id="fullArt"></div>
+    <p class="full-desc" id="fullDesc"></p>
+    <div class="full-tags" id="fullTags"></div>
+    <div class="full-actions">
+      <a class="btn btn-solid" id="fullLink" href="#" target="_blank" rel="noopener">Visit project →</a>
+      <button class="btn" id="fullBack">← Back to jukebox</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ============================================================
+     PROJECT DATA
+     Edit this array to add, remove, or change your projects.
+     - code: the jukebox button code (row letter + column number)
+     - title / short / long: shown in the popup and full view
+     - tags: small chip labels
+     - color: hex used for glow/accent on that track's button + popup
+     - link: URL for "Visit project" on the fullscreen view
+     - active: false = shows as an empty/disabled "queued" slot
+     ============================================================ */
+  const projects = [
+    { code:'A1', title:'Northwind — Booking Platform Redesign', short:'End-to-end redesign of a scheduling tool used by 40k+ small businesses.', long:'Led the end-to-end redesign of a scheduling and booking product used by more than 40,000 small businesses. Rebuilt the core flow from research through shipped UI, cutting average booking time in half and reducing support tickets related to scheduling confusion by a third.', tags:['Product design','React','Design systems'], color:'#FF4FA0', link:'#', active:true },
+    { code:'A2', title:'Lumen — Realtime Analytics Dashboard', short:'A real-time analytics tool that replaced three disconnected spreadsheets.', long:'Designed and built a real-time analytics dashboard from scratch for an internal ops team, replacing three disconnected spreadsheets that were manually updated every morning. Included live charts, saved views, and role-based access.', tags:['Full-stack','Data viz','TypeScript'], color:'#42E8C6', link:'#', active:true },
+    { code:'A3', title:'Fielder — Freelance Client Portal', short:'A self-serve portal for freelancers to manage invoices and feedback.', long:'Designed and built a self-serve client portal for independent freelancers to manage invoices, project feedback, and file sharing in one clean workspace, replacing a patchwork of email threads and shared drives.', tags:['Brand','UI/UX','Next.js'], color:'#FFB13C', link:'#', active:true },
+    { code:'A4', title:'', short:'', long:'', tags:[], color:'#FF4FA0', link:'#', active:false },
+    { code:'B1', title:'Component Library & Design System', short:'A shared design system adopted across 5 product teams.', long:'Built a shared component library and design system from the ground up, including tokens, documentation, and Figma-to-code parity checks. Adopted across five product teams, cutting new-feature build time noticeably.', tags:['Design systems','Storybook','Figma'], color:'#42E8C6', link:'#', active:true },
+    { code:'B2', title:'Mobile App Redesign', short:'A ground-up redesign for a fitness tracking app.', long:'Led a ground-up visual and UX redesign for a fitness tracking app, focused on simplifying onboarding and daily logging. Redesign shipped to both iOS and Android and was tied to a measurable lift in day-7 retention.', tags:['Mobile','iOS','Android'], color:'#FFB13C', link:'#', active:true },
+    { code:'B3', title:'Storefront — E-commerce Rebuild', short:'A performance-focused rebuild of a mid-size online store.', long:'Rebuilt the front end of a mid-size e-commerce storefront with a focus on load performance and checkout conversion, moving from a legacy stack to a modern, statically-generated front end.', tags:['E-commerce','Performance','Next.js'], color:'#FF4FA0', link:'#', active:true },
+    { code:'B4', title:'', short:'', long:'', tags:[], color:'#42E8C6', link:'#', active:false },
+    { code:'C1', title:'Open Source — Contributor', short:'Ongoing contributions to a popular open source UI library.', long:'Regular contributor to a widely-used open source UI library, focused on accessibility fixes and new component proposals reviewed by the maintainer team.', tags:['Open source','Accessibility'], color:'#FFB13C', link:'#', active:true },
+    { code:'C2', title:'Personal Blog Engine', short:'A tiny hand-built markdown-to-site engine for writing.', long:'Built a small, fast, hand-rolled markdown-to-static-site engine for personal writing — no framework, just a build script, because sometimes the fun is in doing it the plain way.', tags:['Node.js','Markdown','Static site'], color:'#FF4FA0', link:'#', active:true },
+    { code:'C3', title:'Hackathon Winner — 24hr Build', short:'First place at a 200-person hackathon, built in 24 hours.', long:'Took first place at a 200-person hackathon with a 24-hour build: a tool that helps small nonprofits generate grant application drafts. Went from idea to working demo, judged live.', tags:['Hackathon','Rapid prototyping'], color:'#42E8C6', link:'#', active:true },
+    { code:'C4', title:'', short:'', long:'', tags:[], color:'#FFB13C', link:'#', active:false },
+    { code:'D1', title:'', short:'', long:'', tags:[], color:'#FF4FA0', link:'#', active:false },
+    { code:'D2', title:'', short:'', long:'', tags:[], color:'#42E8C6', link:'#', active:false },
+    { code:'D3', title:'', short:'', long:'', tags:[], color:'#FFB13C', link:'#', active:false },
+    { code:'D4', title:'', short:'', long:'', tags:[], color:'#FF4FA0', link:'#', active:false },
+  ];
+
+  const grid = document.getElementById('trackGrid');
+  const overlay = document.getElementById('overlay');
+  const playerCard = document.getElementById('playerCard');
+  const nowPlayingLabel = document.getElementById('nowPlayingLabel');
+  const vinylLabel = document.getElementById('vinylLabel');
+  const playerTitle = document.getElementById('playerTitle');
+  const playerDesc = document.getElementById('playerDesc');
+  const playerTags = document.getElementById('playerTags');
+  const closeModal = document.getElementById('closeModal');
+  const anotherTrackBtn = document.getElementById('anotherTrackBtn');
+  const viewFullBtn = document.getElementById('viewFullBtn');
+
+  const fullOverlay = document.getElementById('fullOverlay');
+  const fullClose = document.getElementById('fullClose');
+  const fullCode = document.getElementById('fullCode');
+  const fullTitle = document.getElementById('fullTitle');
+  const fullArt = document.getElementById('fullArt');
+  const fullDesc = document.getElementById('fullDesc');
+  const fullTags = document.getElementById('fullTags');
+  const fullLink = document.getElementById('fullLink');
+  const fullBack = document.getElementById('fullBack');
+
+  let currentProject = null;
+  let loadTimer = null;
+
+  // Build grid buttons
+  projects.forEach((p) => {
+    const btn = document.createElement('button');
+    btn.className = 'track-btn';
+    btn.style.setProperty('--code-color', p.color);
+    btn.innerHTML = `<span class="code mono">${p.code}</span><span class="title">${p.active ? p.title : '— queued —'}</span>`;
+    if (!p.active) {
+      btn.disabled = true;
+    } else {
+      btn.addEventListener('click', () => openPlayer(p));
+    }
+    grid.appendChild(btn);
+  });
+
+  function openPlayer(project){
+    currentProject = project;
+    clearTimeout(loadTimer);
+
+    playerCard.style.setProperty('--code-color', project.color);
+    overlay.classList.add('is-open');
+    playerCard.classList.remove('is-ready');
+    playerCard.classList.add('is-loading');
+
+    nowPlayingLabel.textContent = `Loading ${project.code} — please wait`;
+    vinylLabel.textContent = project.code;
+    playerTitle.textContent = project.title;
+    playerDesc.textContent = project.short;
+    playerTags.innerHTML = project.tags.map(t => `<span>${t}</span>`).join('');
+
+    loadTimer = setTimeout(() => {
+      playerCard.classList.remove('is-loading');
+      playerCard.classList.add('is-ready');
+      nowPlayingLabel.textContent = `Now playing ${project.code}`;
+    }, 1000);
+  }
+
+  function closePlayer(){
+    overlay.classList.remove('is-open');
+    clearTimeout(loadTimer);
+    setTimeout(() => {
+      playerCard.classList.remove('is-loading','is-ready');
+    }, 300);
+  }
+
+  closeModal.addEventListener('click', closePlayer);
+  anotherTrackBtn.addEventListener('click', closePlayer);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closePlayer(); });
+
+  viewFullBtn.addEventListener('click', () => {
+    if (!currentProject) return;
+    const p = currentProject;
+    fullOverlay.style.setProperty('--code-color', p.color);
+    fullCode.textContent = `Track ${p.code}`;
+    fullCode.style.color = p.color;
+    fullTitle.textContent = p.title;
+    fullArt.style.setProperty('--code-color', p.color);
+    fullDesc.textContent = p.long;
+    fullTags.innerHTML = p.tags.map(t => `<span>${t}</span>`).join('');
+    fullLink.href = p.link;
+
+    closePlayer();
+    fullOverlay.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    fullOverlay.scrollTop = 0;
+  });
+
+  function closeFull(){
+    fullOverlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+  fullClose.addEventListener('click', closeFull);
+  fullBack.addEventListener('click', closeFull);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (fullOverlay.classList.contains('is-open')) closeFull();
+      else if (overlay.classList.contains('is-open')) closePlayer();
+    }
+  });
+</script>
+
+</body>
+</html>
