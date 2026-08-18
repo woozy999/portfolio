@@ -1,7 +1,6 @@
-# kyleo.info — portfolio
+# kyleo.info — portfolio website
 
-Static site. No build step, no dependencies. Deployed with GitHub Pages
-straight from the repository root.
+Personal portfolio website to show off projects and work done
 
 ## Structure
 
@@ -27,22 +26,19 @@ assets/
     09-main.js              animation loop
 ```
 
-**Load order matters.** The CSS files are numbered because later rules
-depend on coming after earlier ones. The JS files are numbered because
-later files use values defined in earlier ones. Keep the `<link>` and
-`<script>` tags in `index.html` in numeric order.
+**Load order matters.** CSS files are numbered because later rules depend on coming after earlier ones. The JS files are numbered because later files use values defined in earlier ones. Keep the `<link>` and `<script>` tags in `index.html` in numeric order.
 
 ## Editing your content
 
 Almost everything you'll want to change lives in two files:
 
-- `assets/js/01-config.js` — your email address and contact form endpoint
-- `assets/js/02-data.js` — your projects
+- `assets/js/01-config.js` — email address and contact form endpoint
+- `assets/js/02-data.js` — projects
 
-Your record crate is plain markup in `index.html`; search for
-`EDIT THESE: your actual records`.
+Record crate in plain markup in `index.html`; search for
+`EDIT THESE: your actual records` if lost.
 
-## Making the contact form send mail
+## Contact form setup
 
 Until you set an endpoint, the form opens the visitor's email app with
 everything pre-filled — so it works out of the box.
@@ -51,11 +47,6 @@ To collect submissions instead:
 
 1. Sign up at <https://formspree.io> and create a form.
 2. Paste the endpoint into `FORMSPREE_ENDPOINT` in `assets/js/01-config.js`.
-
-## Deploying
-
-Commit everything to the repository root, then in the repo:
-Settings → Pages → Deploy from a branch → `main` / `(root)`.
 
 ## The oscilloscope
 

@@ -1,0 +1,250 @@
+/* Section ambience — quiet motion behind every section, not just the hero.
+
+   How this works: each section already has `position:relative; z-index:1`
+   (set in 02-chrome.css), which makes it a stacking context. A child at
+   z-index:-1 therefore paints ABOVE the section's own background but BELOW
+   its content — so no z-index juggling is needed on .wrap.
+
+   Everything here is low-alpha and slow on purpose. If you want more or
+   less of it, change the `opacity` on each ::before rather than the
+   gradients themselves. */
+
+/* ===== TRACKLIST ===== */
+.jukebox-section{overflow:hidden;}
+.jukebox-section::before{
+  content:'';position:absolute;inset:-15%;z-index:-1;pointer-events:none;
+  opacity:.55;
+  background:
+    radial-gradient(ellipse 520px 340px at 12% 18%, rgba(201,154,63,.10), transparent 62%),
+    radial-gradient(ellipse 480px 320px at 88% 84%, rgba(44,101,112,.12), transparent 62%);
+  animation:ambDriftA 34s ease-in-out infinite alternate;
+}
+/* a sliver of a record edge, top right */
+.jukebox-section::after{
+  content:'';position:absolute;z-index:-1;pointer-events:none;
+  width:620px;height:620px;right:-260px;top:-240px;border-radius:50%;
+  opacity:.13;
+  background:repeating-radial-gradient(circle at center,
+    transparent 0 11px, rgba(227,211,179,.10) 11px 12px);
+  mask-image:radial-gradient(circle at center,#000 42%,transparent 70%);
+  -webkit-mask-image:radial-gradient(circle at center,#000 42%,transparent 70%);
+  animation:ambSpin 150s linear infinite;
+}
+
+/* ===== TURNTABLE =====
+   No overflow:hidden here on purpose — this section contains a
+   position:sticky child, and an overflowing ancestor breaks sticky. */
+.turntable-section::before{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  opacity:.5;
+  background:
+    radial-gradient(ellipse 60% 26% at 22% 22%, rgba(124,43,49,.14), transparent 65%),
+    radial-gradient(ellipse 55% 24% at 80% 72%, rgba(201,154,63,.10), transparent 65%);
+  animation:ambBreathe 26s ease-in-out infinite alternate;
+}
+
+/* ===== ROTATION / CRATE ===== */
+.rotation-section{overflow:hidden;}
+.rotation-section::before{
+  content:'';position:absolute;inset:-15%;z-index:-1;pointer-events:none;
+  opacity:.55;
+  background:
+    radial-gradient(ellipse 500px 330px at 82% 16%, rgba(44,101,112,.13), transparent 62%),
+    radial-gradient(ellipse 460px 300px at 10% 88%, rgba(124,43,49,.12), transparent 62%);
+  animation:ambDriftB 38s ease-in-out infinite alternate;
+}
+/* stacked record edges, bottom left, like a crate seen side-on */
+.rotation-section::after{
+  content:'';position:absolute;z-index:-1;pointer-events:none;
+  width:560px;height:560px;left:-230px;bottom:-230px;border-radius:50%;
+  opacity:.12;
+  background:repeating-radial-gradient(circle at center,
+    transparent 0 10px, rgba(227,211,179,.10) 10px 11px);
+  mask-image:radial-gradient(circle at center,#000 40%,transparent 70%);
+  -webkit-mask-image:radial-gradient(circle at center,#000 40%,transparent 70%);
+  animation:ambSpin 190s linear infinite reverse;
+}
+
+/* ===== SPEAKERS ===== */
+.speakers-band::before{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  opacity:.6;
+  background:radial-gradient(ellipse 60% 70% at 50% 50%, rgba(201,154,63,.10), transparent 68%);
+  animation:ambPulse 9s ease-in-out infinite;
+}
+
+/* ===== CONTACT ===== */
+.contact{overflow:hidden;}
+.contact::before{
+  content:'';position:absolute;inset:-15%;z-index:-1;pointer-events:none;
+  opacity:.55;
+  background:
+    radial-gradient(ellipse 520px 340px at 16% 78%, rgba(201,154,63,.11), transparent 62%),
+    radial-gradient(ellipse 480px 320px at 86% 22%, rgba(44,101,112,.12), transparent 62%);
+  animation:ambDriftA 30s ease-in-out infinite alternate-reverse;
+}
+
+/* ===== PANELS =====
+   The tracklist panel is a large flat box; a very slow sheen keeps it
+   from reading as dead space. */
+.panel{position:relative;overflow:hidden;}
+.panel::before{
+  content:'';position:absolute;top:-60%;bottom:-60%;left:-40%;width:28%;
+  pointer-events:none;z-index:0;
+  background:linear-gradient(90deg,transparent,rgba(227,211,179,.045),transparent);
+  animation:ambSheen 17s ease-in-out infinite;
+}
+.panel > *{position:relative;z-index:1;}
+
+/* ===== KEYFRAMES ===== */
+@keyframes ambDriftA{
+  0%{transform:translate(0,0) scale(1);}
+  50%{transform:translate(2.5%,-2%) scale(1.05);}
+  100%{transform:translate(-2%,1.5%) scale(1.02);}
+}
+@keyframes ambDriftB{
+  0%{transform:translate(0,0) scale(1.02);}
+  50%{transform:translate(-3%,2%) scale(1.06);}
+  100%{transform:translate(2%,-1%) scale(1);}
+}
+@keyframes ambBreathe{
+  0%{opacity:.38;transform:scale(1);}
+  100%{opacity:.62;transform:scale(1.04);}
+}
+@keyframes ambPulse{
+  0%,100%{opacity:.42;transform:scale(1);}
+  50%{opacity:.72;transform:scale(1.06);}
+}
+@keyframes ambSpin{to{transform:rotate(360deg);}}
+/* Sheens travel with transform rather than `left`: animating a layout
+   property would force a reflow on every frame. */
+@keyframes ambSheen{
+  0%{transform:translateX(0) rotate(12deg);}
+  55%{transform:translateX(620%) rotate(12deg);}
+  100%{transform:translateX(620%) rotate(12deg);}
+}
+
+/* Anyone who asked for less motion gets the colour but none of the drift.
+   (The global reduced-motion rule in 01-base.css already cuts the
+   durations; this also parks the layers at a sensible resting state.) */
+@media (prefers-reduced-motion:reduce){
+  .jukebox-section::after,
+  .rotation-section::after,
+  .panel::before{display:none;}
+}
+
+/* =========================================================
+   SECOND LAYER OF AMBIENCE
+   Everything below is additive — slower, fainter, and aimed at the
+   surfaces the first pass left flat (metal panels, the footer, the
+   long turntable scroll). Same rule as above: tune `opacity`, not
+   the gradients.
+   ========================================================= */
+
+/* ---- drifting dust over the turntable scroll ----
+   The turntable section is over three viewports tall, so a static
+   wash reads as dead space on the way through. These are the only
+   moving specks outside the hero. */
+.turntable-section::after{
+  content:'';position:absolute;inset:-20%;z-index:-1;pointer-events:none;
+  opacity:.5;
+  background-image:
+    radial-gradient(circle, rgba(227,211,179,.55) 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(201,154,63,.45)  1px, transparent 1.6px),
+    radial-gradient(circle, rgba(227,211,179,.35) 1px, transparent 1.6px);
+  background-size:340px 300px, 470px 420px, 260px 380px;
+  background-position:0 0, 120px 90px, 240px 30px;
+  animation:ambDust 90s linear infinite;
+}
+
+/* ---- soundwaves leaving the speakers ---- */
+.speakers-band::after{
+  content:'';position:absolute;top:50%;left:50%;z-index:-1;pointer-events:none;
+  width:340px;height:340px;margin:-170px 0 0 -170px;border-radius:50%;
+  border:1px solid rgba(201,154,63,.20);
+  animation:ambRipple 7s ease-out infinite;
+}
+.speakers-band .spk-mid::before,
+.speakers-band .spk-mid::after{
+  content:'';position:absolute;top:50%;left:50%;z-index:-1;pointer-events:none;
+  width:340px;height:340px;margin:-170px 0 0 -170px;border-radius:50%;
+  border:1px solid rgba(201,154,63,.16);
+  animation:ambRipple 7s ease-out infinite;
+}
+.speakers-band .spk-mid::before{animation-delay:2.3s;}
+.speakers-band .spk-mid::after{animation-delay:4.6s;}
+.speakers-band .spk-mid{position:relative;}
+
+/* ---- a slow shaft of light across the contact panel ---- */
+.contact::after{
+  content:'';position:absolute;z-index:-1;pointer-events:none;
+  top:-40%;bottom:-40%;left:-30%;width:22%;
+  background:linear-gradient(90deg,transparent,rgba(227,211,179,.05),transparent);
+  animation:ambShaft 23s ease-in-out infinite;
+}
+
+/* ---- run-out groove at the very bottom ---- */
+footer{position:relative;overflow:hidden;}
+footer::before{
+  content:'';position:absolute;z-index:-1;pointer-events:none;
+  width:760px;height:760px;left:50%;top:-620px;margin-left:-380px;border-radius:50%;
+  opacity:.10;
+  background:repeating-radial-gradient(circle at center,
+    transparent 0 9px, rgba(227,211,179,.12) 9px 10px);
+  mask-image:radial-gradient(circle at center,transparent 62%,#000 78%,transparent 92%);
+  -webkit-mask-image:radial-gradient(circle at center,transparent 62%,#000 78%,transparent 92%);
+  animation:ambSpin 220s linear infinite;
+}
+
+/* ---- specular sheen on the brushed metal ----
+   Both of these already clip their contents, so the highlight stays
+   on the faceplate. .faceplate and .plinth-top use ::after for the
+   brushed texture, so the sheen goes on ::before. */
+.plinth-top::before,
+.faceplate::before{
+  content:'';position:absolute;top:-60%;bottom:-60%;left:-45%;width:26%;
+  z-index:1;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent);
+  animation:ambSheen 21s ease-in-out infinite;
+}
+.plinth-top::before{animation-duration:26s;animation-delay:3s;}
+
+/* ---- a breath of light inside the speaker cabinets ---- */
+.spk-baffle::after{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(circle at 50% 62%, rgba(201,154,63,.16), transparent 62%);
+  animation:ambPulse 6.5s ease-in-out infinite;
+}
+
+/* ---- hairline of warm light along the top of the banded sections ---- */
+.jukebox-section, .rotation-section, .speakers-band{
+  border-top-color:rgba(201,154,63,.16);
+}
+
+/* ===== KEYFRAMES ===== */
+@keyframes ambDust{
+  from{transform:translate3d(0,0,0);}
+  to{transform:translate3d(-120px,-190px,0);}
+}
+@keyframes ambRipple{
+  0%{transform:scale(.35);opacity:0;}
+  18%{opacity:.55;}
+  100%{transform:scale(1.5);opacity:0;}
+}
+@keyframes ambShaft{
+  0%{transform:translateX(0) rotate(14deg);}
+  55%{transform:translateX(700%) rotate(14deg);}
+  100%{transform:translateX(700%) rotate(14deg);}
+}
+
+/* Decorative extras go away for anyone who asked for less motion. */
+@media (prefers-reduced-motion:reduce){
+  .turntable-section::after,
+  .speakers-band::after,
+  .speakers-band .spk-mid::before,
+  .speakers-band .spk-mid::after,
+  .contact::after,
+  footer::before,
+  .plinth-top::before,
+  .faceplate::before{display:none;}
+}
