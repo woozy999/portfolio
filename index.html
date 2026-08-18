@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kyle Offenbacher — Data Analyst</title>
+<meta name="description" content="Kyle Offenbacher is a data analyst who turns messy data into decisions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Courier+Prime:wght@400;700&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Stylesheets load in this order; the cascade depends on it. -->
+<link rel="stylesheet" href="assets/css/01-base.css">
+<link rel="stylesheet" href="assets/css/02-chrome.css">
+<link rel="stylesheet" href="assets/css/03-hero.css">
+<link rel="stylesheet" href="assets/css/04-sections.css">
+<link rel="stylesheet" href="assets/css/05-components.css">
+</head>
+<body>
+
+
+<div id="scopeLayer" aria-hidden="true">
+  <canvas id="scope"></canvas>
+  <div class="grat"></div>
+  <div class="scan"></div>
+</div>
+
+<div class="scope-ctl" id="scopeCtl">
+  <div class="sc-group">
+    <div class="sc-chips" id="scChips">
+      <button class="sc-chip on" data-wave="sine" aria-pressed="true" aria-label="Sine wave" title="Sine"><svg viewBox="0 0 30 20" aria-hidden="true"><path d="M1 10 C4 2,7 2,10 10 S16 18,19 10 S25 2,29 10"/></svg></button>
+      <button class="sc-chip" data-wave="square" aria-pressed="false" aria-label="Square wave" title="Square"><svg viewBox="0 0 30 20" aria-hidden="true"><path d="M1 16 V4 H10 V16 H19 V4 H29"/></svg></button>
+      <button class="sc-chip" data-wave="triangle" aria-pressed="false" aria-label="Triangle wave" title="Triangle"><svg viewBox="0 0 30 20" aria-hidden="true"><path d="M1 16 L8 4 L15 16 L22 4 L29 16"/></svg></button>
+      <button class="sc-chip" data-wave="saw" aria-pressed="false" aria-label="Sawtooth wave" title="Sawtooth"><svg viewBox="0 0 30 20" aria-hidden="true"><path d="M1 16 L9 4 L9 16 L17 4 L17 16 L25 4 L25 16 L29 12"/></svg></button>
+      <button class="sc-chip" data-wave="pulse" aria-pressed="false" aria-label="Pulse wave" title="Pulse"><svg viewBox="0 0 30 20" aria-hidden="true"><path d="M1 16 H5 V4 H8 V16 H16 V4 H19 V16 H27 V4 H29"/></svg></button>
+      <button class="sc-chip" data-wave="bounce" aria-pressed="false" aria-label="Rectified wave" title="Rectified"><svg viewBox="0 0 30 20" aria-hidden="true"><path d="M1 16 C3 4,6 4,8 16 C10 4,13 4,15 16 C17 4,20 4,22 16 C24 4,27 4,29 16"/></svg></button>
+      <button class="sc-chip" data-wave="ecg" aria-pressed="false" aria-label="Heartbeat wave" title="Heartbeat"><svg viewBox="0 0 30 20" aria-hidden="true"><path d="M1 12 H7 L9 9 L11 15 L13 3 L15 17 L17 11 L19 12 H23 L25 8 L27 12 H29"/></svg></button>
+      <button class="sc-chip" data-wave="noise" aria-pressed="false" aria-label="Noise wave" title="Noise"><svg viewBox="0 0 30 20" aria-hidden="true"><path d="M1 11 L3 6 L5 14 L7 8 L9 15 L11 5 L13 12 L15 7 L17 16 L19 9 L21 13 L23 4 L25 12 L27 8 L29 11"/></svg></button>
+    </div>
+    <span class="sc-cap">Shape</span>
+  </div>
+  <span class="sc-div"></span>
+  <div class="sc-group">
+    <button class="sc-knob" id="miniFreq" aria-label="Frequency"><span class="ind"></span></button>
+    <span class="sc-cap">Freq</span>
+  </div>
+  <div class="sc-group">
+    <button class="sc-knob" id="miniAmp" aria-label="Amplitude"><span class="ind"></span></button>
+    <span class="sc-cap">Ampl</span>
+  </div>
+  <div class="sc-group">
+    <button class="sc-knob" id="miniWarp" aria-label="Warp"><span class="ind"></span></button>
+    <span class="sc-cap">Warp</span>
+  </div>
+  <div class="sc-group">
+    <button class="sc-knob" id="miniGlow" aria-label="Glow"><span class="ind"></span></button>
+    <span class="sc-cap">Glow</span>
+  </div>
+  <span class="sc-div"></span>
+  <div class="sc-group">
+    <button class="sc-toggle" id="scDual" aria-pressed="false" aria-label="Second trace" title="Second trace">&times;2</button>
+    <span class="sc-cap">Dual</span>
+  </div>
+</div>
+
+<div class="side-rail" aria-hidden="true">
+  <span class="rail-label">SIDE A</span>
+  <div class="rail-track"><span class="rail-head" id="railHead"></span></div>
+</div>
+
+<nav>
+  <div class="wrap">
+    <a href="#top" class="brand"><span class="disc" id="navDisc"></span>Kyle Offenbacher<span class="full liner" style="color:var(--manila-dim);font-size:12px;"> // data analyst</span></a>
+    <div class="nav-links">
+      <a href="#work">Tracklist</a>
+      <a href="#toolkit">Toolkit</a>
+      <a href="#rotation">Rotation</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-wash" aria-hidden="true"></div>
+  <div class="hero-grooves" aria-hidden="true"></div>
+  <div class="sparkles" id="sparkles" aria-hidden="true"></div>
+
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow fade-up">Side A — Data Analyst</div>
+      <h1>
+        <span class="ln"><span>I turn messy data</span></span>
+        <span class="ln"><span>into decisions</span></span>
+        <span class="ln"><span class="brass">people act on.</span></span>
+      </h1>
+      <p class="sub fade-up d1">I'm <strong>Kyle Offenbacher</strong>, a data analyst who lives in SQL, Python, and dashboards by day and in record crates by night. This portfolio is set up like a jukebox — pick a track, hear the project.</p>
+      <div class="status fade-up d2"><span class="dot"></span>Currently employed — open to new analyst roles</div>
+      <div class="hero-cta fade-up d3">
+        <a href="#work" class="btn btn-solid">Browse the tracklist</a>
+        <a href="#contact" class="btn">Get in touch →</a>
+      </div>
+    </div>
+
+    <div class="sleeve-stack" aria-hidden="true">
+      <div class="unsleeve-rig">
+        <div class="rig-tilt" id="rigTilt">
+          <div class="disc-halo"></div>
+          <div class="hero-disc" id="heroDisc">
+            <div class="sheen"></div>
+            <div class="disc-label">Side<br>A</div>
+            <div class="spindle"></div>
+          </div>
+          <div class="hero-sleeve" id="heroSleeve">
+            <div class="label-top">LP-001 · Analytics</div>
+            <div class="sleeve-title">Signal<br>from the<br>Noise</div>
+            <div class="sleeve-foot">K. OFFENBACHER · SQL / PYTHON / BI</div>
+          </div>
+        </div>
+        <div class="unsleeve-hint" id="unsleeveHint"><span class="arrow">↓</span> scroll to unsleeve</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="jukebox-section" id="work">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <div class="eyebrow center">The tracklist</div>
+      <h2>Select a track.</h2>
+      <p>Lit buttons are loaded with a project. Dim slots are still in the studio. Press one to drop the needle.</p>
+    </div>
+    <div class="panel reveal">
+      <div class="panel-top">
+        <span>Selector · 16 slots</span>
+        <span style="display:flex;align-items:center;gap:12px;">
+          <span id="loadedCount">— loaded</span>
+          <span class="pt-lamps"><i></i><i></i><i></i></span>
+        </span>
+      </div>
+      <div class="grid" id="trackGrid"></div>
+    </div>
+  </div>
+</section>
+
+<section class="turntable-section" id="toolkit">
+  <div class="tt-scroll" id="ttScroll">
+    <div class="tt-sticky">
+      <div class="tt-inner">
+        <div class="plinth" aria-hidden="true">
+          <div class="plinth-top">
+            <div class="platter-rig">
+              <div class="platter-base"></div>
+              <div class="platter-disc" id="platterDisc">
+                <div class="platter-label">
+                  <span class="pl-num" id="plNum">01</span>
+                  <span class="pl-txt" id="plTxt">SQL &amp; Excel</span>
+                </div>
+              </div>
+              <div class="platter-spindle"></div>
+              <div class="platter-arm" id="platterArm">
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                  <circle cx="86" cy="14" r="10" fill="#B0B4B8" stroke="#6E7278" stroke-width="1"/>
+                  <rect x="22" y="10.5" width="64" height="6" rx="3" fill="#C9CDD1"/>
+                  <rect x="18" y="9" width="12" height="10" rx="2" fill="#2A2C2F"/>
+                </svg>
+              </div>
+            </div>
+            <div class="plinth-strip">
+              <div class="rpm-btns"><span class="rpm-btn on">33⅓</span><span class="rpm-btn">45</span></div>
+              <span class="plinth-readout" id="platterRpm">Track 1 of 3</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="tt-head">
+            <div class="eyebrow">The setup</div>
+            <h2>What I run through.</h2>
+          </div>
+          <div class="tt-tracks" id="ttTracks">
+            <button class="tt-item is-active" data-accent="#C99A3F" aria-pressed="true">
+              <span class="tt-num"><span class="play-dot"></span>01 · The Foundation</span>
+              <h4>SQL &amp; Excel</h4>
+              <p>Where most of the work happens. Writing queries to pull and join data across tables, then modeling and validating in Excel when stakeholders need something they can open and poke at themselves.</p>
+            </button>
+            <button class="tt-item" data-accent="#2C6570" aria-pressed="false">
+              <span class="tt-num"><span class="play-dot"></span>02 · The Deep Cuts</span>
+              <h4>Python &amp; pandas</h4>
+              <p>For anything SQL can't do cleanly: reshaping messy data, automating recurring reports, statistical work, and analysis that needs to be reproducible rather than manually redone each month.</p>
+            </button>
+            <button class="tt-item" data-accent="#7C2B31" aria-pressed="false">
+              <span class="tt-num"><span class="play-dot"></span>03 · The Playback</span>
+              <h4>Tableau &amp; Power BI</h4>
+              <p>Turning finished analysis into dashboards people actually use. Built for the person reading it, not the person who made it — clear defaults, honest charts, no vanity metrics.</p>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="rotation-section" id="rotation">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">On heavy rotation</div>
+      <h2>The other half<br>of the story.</h2>
+    </div>
+    <div class="rotation-grid">
+      <div class="reveal">
+        <p>Music isn't a quirky footnote on my resume — it's the reason I got into data in the first place. I've always been the person tracking listening stats, building playlists with rules, and arguing about whether an album's sequencing actually works.</p>
+        <p>Turns out that's the same instinct analysis runs on: noticing patterns, caring about how something is structured, and being willing to defend a take with evidence. The crate on the right is what's been spinning lately.</p>
+      </div>
+      <div class="crate" id="crate">
+        <!-- EDIT THESE: your actual records -->
+        <div class="crate-row"><span class="cr-name">Artist or album name</span><span class="cr-note">On repeat</span></div>
+        <div class="crate-row"><span class="cr-name">Artist or album name</span><span class="cr-note">All-time favorite</span></div>
+        <div class="crate-row"><span class="cr-name">Artist or album name</span><span class="cr-note">Recent find</span></div>
+        <div class="crate-row"><span class="cr-name">Artist or album name</span><span class="cr-note">Comfort listen</span></div>
+        <div class="crate-row"><span class="cr-name">Artist or album name</span><span class="cr-note">Best live show</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="speakers-band">
+  <div class="wrap">
+    <div class="spk-row reveal">
+      <div class="speaker" aria-hidden="true">
+        <div class="spk-baffle">
+          <span class="tweeter"></span>
+          <span class="woofer woof"><span class="cone"></span><span class="dustcap"></span></span>
+        </div>
+        <div class="spk-badge">KO Audio · L</div>
+      </div>
+      <div class="spk-mid">
+        <div class="eyebrow center">The system</div>
+        <h3>Thanks for listening.</h3>
+        <p>Everything above is playing through here. If something caught your ear, the line's open below.</p>
+        <div class="spk-waves" id="spkWaves" aria-hidden="true"></div>
+      </div>
+      <div class="speaker" aria-hidden="true">
+        <div class="spk-baffle">
+          <span class="tweeter"></span>
+          <span class="woofer woof"><span class="cone"></span><span class="dustcap"></span></span>
+        </div>
+        <div class="spk-badge">KO Audio · R</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="contact" id="contact">
+  <div class="wrap contact-grid">
+    <div class="reveal">
+      <div class="eyebrow">Requests</div>
+      <h2>Let's talk.</h2>
+      <p class="lede">I'm currently working as an analyst and open to hearing about new roles, interesting problems, or a good record recommendation. I reply to everything.</p>
+      <a href="mailto:you@kyleo.info" class="big-link" id="emailLink">you@kyleo.info →</a>
+      <div class="social-row">
+        <a href="#" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="#" target="_blank" rel="noopener">GitHub</a>
+        <a href="#" target="_blank" rel="noopener">Resume</a>
+      </div>
+    </div>
+
+    <div class="unit reveal">
+      <div class="faceplate">
+        <div class="screws"><i></i><i></i><i></i><i></i></div>
+        <div class="fp-pad">
+          <div class="fp-header">
+            <div class="fp-title">Line In</div>
+            <div class="fp-meta">Rec <span class="led-sm"></span></div>
+          </div>
+          <form id="contactForm" novalidate>
+            <div class="field">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" rows="5" required></textarea>
+            </div>
+            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off"
+                   style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+            <button type="submit" class="btn-plate" id="submitBtn">Send message</button>
+            <div class="form-status" id="formStatus"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span><span class="foot-disc"></span>© 2026 Kyle Offenbacher</span>
+    <span>Hand-built · HTML, CSS &amp; JS</span>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Now playing project">
+  <div class="player-card" id="playerCard">
+    <button class="player-close" id="closeModal" aria-label="Close">✕</button>
+    <div class="np-label" id="npLabel"></div>
+    <div class="player-stage">
+      <div class="vinyl-wrap">
+        <div class="tonearm" aria-hidden="true">
+          <svg width="66" height="66" viewBox="0 0 66 66">
+            <circle cx="55" cy="9" r="6.5" fill="#C99A3F"/>
+            <rect x="18" y="6.5" width="37" height="4.5" rx="2.25" fill="#C99A3F"/>
+            <circle cx="18" cy="8.75" r="3.6" fill="#E3D3B3"/>
+          </svg>
+        </div>
+        <div class="vinyl"><div class="vinyl-label" id="vinylLabel">—</div></div>
+      </div>
+      <div class="player-info">
+        <h3 id="playerTitle"></h3>
+        <div class="real-title" id="playerReal"></div>
+        <p class="desc" id="playerDesc"></p>
+        <div class="tag-row" id="playerTags"></div>
+        <div class="player-actions">
+          <button class="btn" id="anotherBtn">← Pick another track</button>
+          <button class="btn btn-solid" id="viewFullBtn">Read the liner notes →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="full-overlay" id="fullOverlay">
+  <button class="full-close" id="fullClose" aria-label="Close project">✕</button>
+  <div class="full-inner">
+    <div class="full-code" id="fullCode"></div>
+    <h1 id="fullTitle"></h1>
+    <div class="full-real" id="fullReal"></div>
+    <div class="full-art" id="fullArt"></div>
+    <div class="full-block"><h4>The problem</h4><p id="fullProblem"></p></div>
+    <div class="full-block"><h4>What I did</h4><ul id="fullApproach"></ul></div>
+    <div class="full-block"><h4>The result</h4><p id="fullResult"></p></div>
+    <div class="full-tags" id="fullTags"></div>
+    <div class="full-actions">
+      <a class="btn btn-solid" id="fullLink" href="#" target="_blank" rel="noopener">View the work →</a>
+      <button class="btn" id="fullBack">← Back to the jukebox</button>
+    </div>
+  </div>
+</div>
+<!-- Scripts load in this order; later files use values defined in earlier ones. -->
+<script src="assets/js/01-config.js"></script>
+<script src="assets/js/02-data.js"></script>
+<script src="assets/js/03-utils.js"></script>
+<script src="assets/js/04-ambient.js"></script>
+<script src="assets/js/05-scope.js"></script>
+<script src="assets/js/06-tracklist.js"></script>
+<script src="assets/js/07-contact.js"></script>
+<script src="assets/js/08-turntable.js"></script>
+<script src="assets/js/09-main.js"></script>
+</body>
+</html>

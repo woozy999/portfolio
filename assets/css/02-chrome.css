@@ -1,0 +1,149 @@
+/* Chrome — stacking order, scope controls, nav, side rail */
+
+/* =========================================================
+   LAYERING
+   scope sits at -1, above the html background, below content.
+   Flow containers are explicitly lifted; fixed UI keeps its own
+   stacking and is never given position:relative.
+   ========================================================= */
+#scopeLayer{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;
+}
+#scopeLayer canvas{width:100%;height:100%;display:block;}
+#scopeLayer .grat{
+  position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(90deg,rgba(95,227,160,.05) 0 1px,transparent 1px 90px),
+    repeating-linear-gradient(180deg,rgba(95,227,160,.05) 0 1px,transparent 1px 90px);
+  mask-image:radial-gradient(ellipse at center,#000 25%,transparent 78%);
+  -webkit-mask-image:radial-gradient(ellipse at center,#000 25%,transparent 78%);
+}
+#scopeLayer .scan{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(180deg,rgba(0,0,0,.14) 0 1px,transparent 1px 3px);
+  opacity:.5;
+}
+nav, .hero, section, .speakers-band, footer{position:relative;z-index:1;}
+
+/* ---- scope control pill (bottom-left, clear of the side rail) ---- */
+.scope-ctl{
+  position:fixed;left:22px;bottom:22px;z-index:70;
+  display:flex;align-items:center;gap:14px;
+  background:rgba(22,17,15,.9);backdrop-filter:blur(12px);
+  border:1px solid rgba(227,211,179,.16);border-radius:12px;
+  padding:10px 14px;
+  box-shadow:0 14px 34px -14px rgba(0,0,0,.85);
+  opacity:0;transform:translateY(12px);pointer-events:none;
+  transition:opacity .45s var(--ease),transform .45s var(--ease);
+}
+.scope-ctl.show{opacity:1;transform:translateY(0);pointer-events:auto;}
+@media(max-width:700px){
+  .scope-ctl{left:50%;transform:translate(-50%,12px);bottom:14px;gap:10px;padding:8px 11px;}
+  .scope-ctl.show{transform:translate(-50%,0);}
+}
+.sc-group{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.sc-cap{
+  font-family:'Courier Prime',monospace;font-size:8.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--manila-dim);line-height:1;white-space:nowrap;
+}
+.sc-chips{display:flex;gap:5px;}
+.sc-chip{
+  width:28px;height:24px;display:flex;align-items:center;justify-content:center;
+  background:rgba(227,211,179,.05);border:1px solid rgba(227,211,179,.18);border-radius:5px;
+  color:var(--manila-dim);font-size:13px;line-height:1;padding:0;
+  transition:all .22s var(--ease);
+}
+.sc-chip:hover{border-color:rgba(227,211,179,.45);color:var(--manila);}
+.sc-chip.on{
+  background:var(--phosphor);border-color:var(--phosphor);color:#0B1A10;
+  box-shadow:0 0 10px rgba(95,227,160,.45);
+}
+.sc-knob{
+  width:30px;height:30px;border-radius:50%;position:relative;touch-action:none;padding:0;
+  background:linear-gradient(180deg,#3E362E,#221C18);
+  border:1px solid rgba(227,211,179,.22);cursor:grab;
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.14);
+}
+.sc-knob:active{cursor:grabbing;}
+.sc-knob .ind{
+  position:absolute;top:3px;left:50%;width:2px;height:8px;border-radius:2px;
+  background:var(--phosphor);box-shadow:0 0 6px var(--phosphor);
+  transform-origin:50% 12px;transform:translateX(-50%) rotate(0deg);
+}
+.sc-div{width:1px;align-self:stretch;background:rgba(227,211,179,.14);}
+
+/* =========================================================
+   NAV
+   ========================================================= */
+nav{
+  position:sticky;top:0;z-index:60;background:rgba(20,16,14,.9);
+  backdrop-filter:blur(12px);border-bottom:1px solid rgba(227,211,179,.12);
+  padding:14px 0;
+}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px;}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;line-height:1;}
+.brand .disc{
+  width:18px;height:18px;border-radius:50%;
+  background:repeating-radial-gradient(circle at center,#0b0908 0 2px,#241d19 2px 4px);
+  position:relative;flex-shrink:0;will-change:transform;
+}
+.brand .disc::after{
+  content:'';position:absolute;top:50%;left:50%;width:5px;height:5px;border-radius:50%;
+  background:var(--oxblood);transform:translate(-50%,-50%);
+}
+.nav-links{display:flex;gap:24px;font-family:'Courier Prime',monospace;font-size:12.5px;line-height:1;}
+.nav-links a{position:relative;padding-bottom:3px;}
+.nav-links a::after{
+  content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--brass);
+  transition:width .35s var(--ease);
+}
+.nav-links a:hover::after{width:100%;}
+@media(max-width:660px){
+  .nav-links{gap:14px;font-size:11px;}
+  .brand span.full{display:none;}
+}
+
+/* side rail */
+.side-rail{
+  position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:55;
+  display:flex;flex-direction:column;align-items:center;gap:12px;pointer-events:none;
+}
+@media(max-width:1160px){.side-rail{display:none;}}
+.side-rail .rail-track{width:2px;height:160px;background:rgba(227,211,179,.16);border-radius:2px;position:relative;}
+.side-rail .rail-head{
+  position:absolute;left:50%;top:0;width:11px;height:11px;border-radius:50%;
+  background:var(--brass);transform:translate(-50%,-50%);box-shadow:0 0 0 4px rgba(201,154,63,.16);
+}
+.side-rail .rail-label{
+  font-family:'Courier Prime',monospace;font-size:9.5px;letter-spacing:.18em;
+  color:var(--manila-dim);writing-mode:vertical-rl;
+}
+
+/* --- oscilloscope controls: wider chip row with icon shapes --- */
+.sc-chips{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:210px;}
+.sc-chip{
+  width:26px;height:22px;padding:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.sc-chip svg{width:15px;height:11px;display:block;}
+.sc-chip svg path,.sc-chip svg polyline{
+  fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;
+}
+.sc-toggle{
+  min-width:34px;height:22px;padding:0 7px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(227,211,179,.05);border:1px solid rgba(227,211,179,.18);
+  color:var(--manila-dim);font-family:'Courier Prime',monospace;
+  font-size:9px;letter-spacing:.08em;line-height:1;
+  transition:all .22s var(--ease);
+}
+.sc-toggle:hover{border-color:rgba(227,211,179,.45);color:var(--manila);}
+.sc-toggle.on{
+  background:var(--phosphor);border-color:var(--phosphor);color:#0B1A10;
+  box-shadow:0 0 10px rgba(95,227,160,.45);
+}
+@media(max-width:700px){
+  .sc-chips{max-width:150px;}
+  .scope-ctl{max-width:calc(100vw - 24px);flex-wrap:wrap;justify-content:center;}
+}

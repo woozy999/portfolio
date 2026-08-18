@@ -1,0 +1,55 @@
+/* Base — custom properties, reset, typography, shared utilities */
+
+:root{
+  --wax:#14100E;
+  --wax-soft:#1E1815;
+  --manila:#E3D3B3;
+  --manila-dim:rgba(227,211,179,0.6);
+  --oxblood:#7C2B31;
+  --brass:#C99A3F;
+  --teal:#2C6570;
+  --phosphor:#5FE3A0;
+
+  --alu:#B0B4B8;
+  --alu-hi:#D6D9DC;
+  --alu-lo:#7C8086;
+  --engrave:#25272A;
+  --engrave-dim:rgba(37,39,42,0.62);
+  --walnut:#5C3A24;
+  --walnut-lo:#2E1C10;
+  --walnut-hi:#7A5133;
+
+  --ease:cubic-bezier(.22,1,.36,1);
+  --brushed:repeating-linear-gradient(90deg,
+    rgba(255,255,255,.05) 0 1px, rgba(0,0,0,.045) 1px 2px,
+    rgba(255,255,255,.02) 2px 3px, rgba(0,0,0,.02) 3px 4px);
+  --grain:repeating-linear-gradient(88deg,
+    rgba(0,0,0,.20) 0 2px, rgba(255,255,255,.05) 2px 4px,
+    rgba(0,0,0,.10) 4px 7px, rgba(255,255,255,.03) 7px 9px);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;background:var(--wax);}
+body{
+  background:transparent;color:var(--manila);
+  font-family:'Karla',sans-serif;line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
+}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+.wrap{max-width:1060px;margin:0 auto;padding:0 26px;}
+.liner{font-family:'Courier Prime',monospace;}
+.plate{
+  font-family:'Barlow Semi Condensed',sans-serif;
+  text-transform:uppercase;letter-spacing:.2em;font-weight:600;
+}
+.eyebrow{
+  font-family:'Courier Prime',monospace;font-size:12px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--brass);display:flex;align-items:center;gap:10px;
+}
+.eyebrow::before{content:'';width:22px;height:1px;background:var(--brass);opacity:.7;}
+.eyebrow.center{justify-content:center;}
