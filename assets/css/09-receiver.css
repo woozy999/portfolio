@@ -1,0 +1,435 @@
+/* THE RECEIVER — the tracklist, built as a 1970s silver-face tuner.
+
+   Layout top to bottom: a smoked-glass header with status lamps, two
+   meters and the bank lamps; the dial scale; the 16 illuminated input
+   selectors; a bottom strip. The lamps are warm incandescent, not LEDs —
+   amber, soft-edged, with a little bloom — and 06-tracklist.js flickers
+   them at random the way warm gear does. */
+
+:root{
+  --lamp:#FF8A2B;            /* incandescent amber */
+  --lamp-hot:#FFC46B;
+  --lamp-dead:#3A2E26;
+  --glass:#100C0A;
+
+  /* Cabinet walnut. The existing --grain runs at 88deg, which on a 14px
+     cabinet edge reads as corduroy rather than timber. Real veneer grain
+     runs along the length of the case, so this is near-horizontal, at
+     several frequencies, at low contrast. Used by the receiver, the
+     turntable plinth and the CD deck. */
+  --veneer:
+    repeating-linear-gradient(2deg,
+      rgba(0,0,0,.20) 0 1px, transparent 1px 5px,
+      rgba(255,255,255,.035) 5px 6px, transparent 6px 13px),
+    repeating-linear-gradient(179deg,
+      rgba(0,0,0,.11) 0 2px, transparent 2px 9px,
+      rgba(120,72,38,.16) 9px 11px, transparent 11px 26px),
+    linear-gradient(158deg,#7E5535 0%,#5C3A24 42%,#42260F 78%,#2E1C10 100%);
+}
+
+/* =========================================================
+   THE UNIT
+   ========================================================= */
+.receiver{
+  position:relative;border-radius:6px;
+  background:var(--veneer);
+  padding:15px;
+  box-shadow:
+    0 46px 90px -34px rgba(0,0,0,.92),
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 -2px 0 rgba(0,0,0,.45);
+}
+/* the rounded-over front edge of the cabinet, top and bottom */
+.receiver::before{
+  content:'';position:absolute;left:0;right:0;top:0;height:15px;
+  border-radius:6px 6px 0 0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.16),transparent 70%);
+}
+.receiver::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:15px;
+  border-radius:0 0 6px 6px;pointer-events:none;
+  background:linear-gradient(0deg,rgba(0,0,0,.45),transparent 75%);
+}
+
+.rcv-face{
+  position:relative;border-radius:3px;overflow:hidden;
+  padding:20px clamp(14px,2.4vw,26px) 16px;
+  background:linear-gradient(180deg,#DDE0E3 0%,#C2C6CA 16%,#AEB2B7 52%,#8E9298 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.75),
+    inset 0 -1px 0 rgba(0,0,0,.4),
+    inset 0 0 44px rgba(0,0,0,.16);
+}
+/* brushed grain + a slow specular pass across the metal */
+.rcv-face::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:var(--brushed);opacity:.55;
+}
+.rcv-face::after{
+  content:'';position:absolute;top:-60%;bottom:-60%;left:-40%;width:26%;
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);
+  animation:rcvSheen 19s ease-in-out infinite;
+}
+@keyframes rcvSheen{
+  0%{transform:translateX(0) rotate(12deg);}
+  58%{transform:translateX(640%) rotate(12deg);}
+  100%{transform:translateX(640%) rotate(12deg);}
+}
+
+.rcv-screws{position:absolute;inset:0;pointer-events:none;z-index:6;}
+.rcv-screws i{
+  position:absolute;width:9px;height:9px;border-radius:50%;
+  background:radial-gradient(circle at 34% 30%,#EDEFF1,#70747A 62%,#4A4D52);
+  box-shadow:0 1px 1px rgba(255,255,255,.55),inset 0 -1px 1px rgba(0,0,0,.45);
+}
+.rcv-screws i::after{
+  content:'';position:absolute;top:50%;left:22%;right:22%;height:1px;
+  background:rgba(0,0,0,.45);transform:translateY(-50%) rotate(28deg);
+}
+.rcv-screws i:nth-child(1){top:8px;left:8px;}
+.rcv-screws i:nth-child(2){top:8px;right:8px;}
+.rcv-screws i:nth-child(3){bottom:8px;left:8px;}
+.rcv-screws i:nth-child(4){bottom:8px;right:8px;}
+
+/* =========================================================
+   UPPER GLASS — lamps + meters
+   ========================================================= */
+.rcv-glass{
+  position:relative;z-index:3;
+  display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(12px,3vw,34px);
+  align-items:center;
+  padding:14px clamp(12px,2vw,22px);
+  border-radius:3px;
+  background:linear-gradient(180deg,#1A1411,var(--glass) 55%,#0B0807);
+  box-shadow:
+    inset 0 2px 6px rgba(0,0,0,.9),
+    inset 0 -1px 0 rgba(255,255,255,.06),
+    0 1px 0 rgba(255,255,255,.5);
+}
+/* glass reflection */
+.rcv-glass::after{
+  content:'';position:absolute;inset:0;border-radius:3px;pointer-events:none;
+  background:linear-gradient(168deg,rgba(255,255,255,.09) 0%,transparent 34%);
+}
+
+.rcv-lampset{display:flex;flex-wrap:wrap;gap:7px;align-content:center;}
+.rcv-lampset-l{justify-content:flex-start;}
+.rcv-lampset-r{justify-content:flex-end;}
+
+/* ---- the incandescent lamps ---- */
+.rcv-lamp{
+  position:relative;
+  font-family:'Barlow Semi Condensed',sans-serif;font-weight:600;
+  text-transform:uppercase;letter-spacing:.14em;font-size:9px;line-height:1;
+  padding:5px 8px;border-radius:2px;
+  color:#6A5B4E;
+  background:linear-gradient(180deg,#241C17,#150F0C);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.85),0 1px 0 rgba(255,255,255,.07);
+  transition:color .3s var(--ease),background .3s var(--ease),box-shadow .3s var(--ease);
+  white-space:nowrap;
+}
+.rcv-lamp.is-on{
+  color:#2A1403;
+  background:linear-gradient(180deg,var(--lamp-hot),var(--lamp) 58%,#D96A16);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.55),
+    inset 0 -2px 4px rgba(120,48,0,.5),
+    0 0 12px rgba(255,138,43,.55),
+    0 0 26px rgba(255,138,43,.25);
+  text-shadow:0 1px 0 rgba(255,220,170,.5);
+}
+/* the bloom around a lit lamp — separate layer so it can flicker on its own */
+.rcv-lamp::after{
+  content:'';position:absolute;inset:-7px;border-radius:6px;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(255,138,43,.34),transparent 70%);
+  opacity:0;transition:opacity .3s var(--ease);
+}
+.rcv-lamp.is-on::after{opacity:1;}
+
+/* ---- meters ---- */
+.rcv-meters{display:flex;gap:clamp(10px,1.6vw,18px);}
+.rcv-meter{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.rcv-meter-face{
+  position:relative;width:clamp(74px,9vw,104px);aspect-ratio:120/54;
+  border-radius:2px;overflow:hidden;
+  background:linear-gradient(180deg,#F0E4C4 0%,#E4D5AE 62%,#CDBB92 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(90,72,42,.5),
+    inset 0 -6px 12px rgba(120,96,54,.28),
+    0 0 14px rgba(255,196,107,.28);
+}
+/* warm backlight wash + glass curve */
+.rcv-meter-face::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 120% at 50% 118%, rgba(255,196,107,.5), transparent 62%),
+    linear-gradient(165deg,rgba(255,255,255,.5) 0%,transparent 42%);
+}
+.rcv-scale{position:absolute;inset:0;width:100%;height:100%;}
+.rcv-needle{
+  position:absolute;left:50%;bottom:11%;
+  width:2px;height:70%;border-radius:1px;
+  background:linear-gradient(180deg,#D4442A 0%,#A32E19 55%,#5E1C0E 100%);
+  transform-origin:50% 100%;
+  transform:translateX(-50%) rotate(-34deg);
+  transition:transform .75s cubic-bezier(.16,1.3,.35,1);
+  filter:drop-shadow(1px 2px 1px rgba(90,60,20,.45));
+}
+.rcv-pivot{
+  position:absolute;left:50%;bottom:11%;width:8px;height:8px;border-radius:50%;
+  transform:translate(-50%,50%);
+  background:radial-gradient(circle at 34% 30%,#8A7752,#241D12);
+  box-shadow:0 1px 1px rgba(255,255,255,.45),0 0 3px rgba(0,0,0,.4);
+}
+.rcv-meter-cap{
+  font-family:'Barlow Semi Condensed',sans-serif;font-weight:600;
+  text-transform:uppercase;letter-spacing:.2em;font-size:8px;color:rgba(227,211,179,.55);
+}
+
+/* =========================================================
+   DIAL SCALE
+   ========================================================= */
+.rcv-dial{position:relative;z-index:3;margin-top:14px;}
+.rcv-dial-glass{
+  position:relative;height:44px;border-radius:2px;overflow:hidden;
+  display:flex;align-items:center;gap:12px;padding:0 12px;
+  background:linear-gradient(180deg,#F2E7C9,#DFCFA6 58%,#C4B189);
+  box-shadow:
+    inset 0 0 0 1px rgba(90,72,42,.45),
+    inset 0 -6px 14px rgba(120,96,54,.26),
+    inset 0 2px 4px rgba(255,255,255,.6),
+    0 0 18px rgba(255,196,107,.22);
+}
+.rcv-dial-glass::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(172deg,rgba(255,255,255,.42) 0%,transparent 46%);
+}
+.rcv-dial-tag{
+  font-family:'Barlow Semi Condensed',sans-serif;font-weight:600;
+  text-transform:uppercase;letter-spacing:.2em;font-size:9px;color:#6B5A3C;flex-shrink:0;
+  position:relative;z-index:2;
+}
+.rcv-ticks{position:relative;flex:1;height:100%;}
+/* generated in 06-tracklist.js so the tick count always matches the slots */
+.rcv-ticks i{
+  position:absolute;bottom:9px;width:1px;background:#7A6845;
+  transform:translateX(-50%);
+}
+.rcv-ticks i.maj{height:15px;opacity:.85;}
+.rcv-ticks i.min{height:8px;opacity:.5;}
+.rcv-ticks b{
+  position:absolute;top:7px;transform:translateX(-50%);
+  font-family:'Barlow Semi Condensed',sans-serif;font-weight:600;
+  font-size:9px;letter-spacing:.08em;color:#6B5A3C;
+}
+.rcv-pointer{
+  position:absolute;top:3px;bottom:3px;width:2px;left:0;
+  background:linear-gradient(180deg,#FF5B2E,#B4331A);
+  box-shadow:0 0 8px rgba(255,91,46,.9),0 0 18px rgba(255,91,46,.45);
+  border-radius:2px;z-index:3;
+  transition:left .55s cubic-bezier(.22,1,.36,1);
+}
+.rcv-pointer::before{
+  content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+  border-left:4px solid transparent;border-right:4px solid transparent;
+  border-top:5px solid #FF5B2E;
+}
+
+/* =========================================================
+   THE 16 INPUT SELECTORS
+   ========================================================= */
+.rcv-selectors{
+  position:relative;z-index:3;margin-top:16px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:9px;
+  padding:14px;border-radius:3px;
+  background:linear-gradient(180deg,#17110E,#0C0908);
+  box-shadow:inset 0 2px 7px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.45);
+}
+
+.rcv-input{
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;gap:7px;
+  min-height:96px;padding:11px 11px 13px;
+  text-align:left;border-radius:3px;
+  background:linear-gradient(180deg,#221A15,#140E0C 70%);
+  border:1px solid rgba(227,211,179,.07);
+  color:#6A5B4E;
+  /* opacity/transform are the reveal; the rest is the press feel */
+  opacity:0;transform:translateY(16px);
+  transition:
+    opacity .5s var(--ease),
+    transform .16s var(--ease),
+    box-shadow .3s var(--ease),
+    border-color .3s var(--ease),
+    background .3s var(--ease);
+}
+.rcv-selectors.is-visible .rcv-input{opacity:1;transform:translateY(0);}
+
+/* the lens over the button, like the smoked plastic on a real selector */
+.rcv-input::before{
+  content:'';position:absolute;inset:0;pointer-events:none;border-radius:3px;
+  background:linear-gradient(170deg,rgba(255,255,255,.075) 0%,transparent 40%);
+}
+
+/* ---- LOADED (lamp behind the lens is on) ---- */
+.rcv-input.is-loaded{
+  color:#F3D9B4;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 118%, rgba(255,138,43,.30), transparent 68%),
+    linear-gradient(180deg,#2E211A,#1A120E 72%);
+  border-color:rgba(255,138,43,.28);
+  box-shadow:
+    inset 0 0 22px rgba(255,138,43,.16),
+    0 0 0 1px rgba(255,138,43,.05);
+}
+.rcv-input.is-loaded:hover,
+.rcv-input.is-loaded:focus-visible{
+  transform:translateY(-2px);
+  border-color:rgba(255,170,80,.75);
+  box-shadow:
+    inset 0 0 30px rgba(255,138,43,.3),
+    0 12px 26px -12px rgba(255,138,43,.55),
+    0 0 22px rgba(255,138,43,.28);
+  outline:none;
+}
+.rcv-input.is-loaded:active{transform:translateY(1px) scale(.99);}
+
+/* ---- EMPTY ---- */
+.rcv-input.is-empty{cursor:default;}
+.rcv-input.is-empty .ri-name{color:#4E423A;}
+
+/* ---- the parts of a selector ---- */
+.ri-top{display:flex;align-items:center;gap:8px;}
+.ri-bulb{
+  position:relative;width:9px;height:9px;border-radius:50%;flex-shrink:0;
+  background:var(--lamp-dead);
+  box-shadow:inset 0 1px 1px rgba(0,0,0,.8);
+  transition:background .3s var(--ease),box-shadow .3s var(--ease);
+}
+.rcv-input.is-loaded .ri-bulb{
+  background:radial-gradient(circle at 38% 32%,#FFE0B0,var(--lamp) 62%,#C25A0E);
+  box-shadow:0 0 8px rgba(255,138,43,.95),0 0 18px rgba(255,138,43,.45);
+}
+.ri-code{
+  font-family:'Courier Prime',monospace;font-size:10.5px;letter-spacing:.14em;
+  color:inherit;opacity:.8;
+}
+.ri-name{
+  font-size:12.5px;font-weight:600;line-height:1.32;color:#E8D2AE;
+}
+.rcv-input.is-loaded .ri-name{color:#FBE7C6;text-shadow:0 0 12px rgba(255,138,43,.35);}
+
+/* the lit strip along the bottom, like the illuminated legend on the real thing */
+.ri-strip{
+  margin-top:auto;height:2px;border-radius:2px;background:#2A211B;
+  transition:background .3s var(--ease),box-shadow .3s var(--ease);
+}
+.rcv-input.is-loaded .ri-strip{
+  background:linear-gradient(90deg,var(--lamp),var(--lamp-hot));
+  box-shadow:0 0 9px rgba(255,138,43,.8);
+}
+
+/* a soft warm halo bleeding out of a lit selector */
+.ri-glow{
+  position:absolute;left:50%;bottom:-14px;width:76%;height:34px;
+  transform:translateX(-50%);pointer-events:none;border-radius:50%;
+  background:radial-gradient(ellipse at center,rgba(255,138,43,.4),transparent 70%);
+  opacity:0;transition:opacity .35s var(--ease);
+}
+.rcv-input.is-loaded .ri-glow{opacity:.55;}
+.rcv-input.is-loaded:hover .ri-glow{opacity:1;}
+
+/* the slot the pointer is currently parked on */
+.rcv-input.is-cued{
+  border-color:rgba(255,196,107,.85);
+  box-shadow:
+    inset 0 0 34px rgba(255,138,43,.34),
+    0 0 26px rgba(255,138,43,.34);
+}
+
+/* =========================================================
+   BOTTOM STRIP
+   ========================================================= */
+.rcv-strip{
+  position:relative;z-index:3;margin-top:14px;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  font-family:'Barlow Semi Condensed',sans-serif;font-weight:600;
+  text-transform:uppercase;letter-spacing:.18em;font-size:9.5px;color:var(--engrave-dim);
+}
+.rcv-readout{
+  padding:5px 11px;border-radius:2px;
+  background:linear-gradient(180deg,#C6CACE,#9DA1A7);
+  border:1px solid rgba(0,0,0,.3);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6);
+  color:var(--engrave);
+}
+
+/* =========================================================
+   THE FLICKER
+   06-tracklist.js drops .is-flicker on a random lamp every so
+   often. Two shapes so repeats don't read as a loop: a quick
+   stutter and a slower brown-out.
+   ========================================================= */
+.is-flicker{animation:lampStutter .34s steps(1,end) 1;}
+.is-flicker.flk-slow{animation:lampBrownout .62s ease-in-out 1;}
+
+@keyframes lampStutter{
+  0%,100%{filter:brightness(1);}
+  12%{filter:brightness(.48) saturate(.7);}
+  24%{filter:brightness(1.12);}
+  38%{filter:brightness(.62) saturate(.8);}
+  52%{filter:brightness(1.04);}
+  64%{filter:brightness(.8);}
+}
+@keyframes lampBrownout{
+  0%,100%{filter:brightness(1);}
+  30%{filter:brightness(.58) saturate(.72);}
+  46%{filter:brightness(.7);}
+  70%{filter:brightness(.9);}
+}
+
+/* the whole panel dipping, like the mains sagging */
+.receiver.is-dip .rcv-glass,
+.receiver.is-dip .rcv-dial-glass,
+.receiver.is-dip .rcv-selectors{
+  animation:panelDip .5s ease-in-out 1;
+}
+@keyframes panelDip{
+  0%,100%{filter:brightness(1);}
+  22%{filter:brightness(.86);}
+  40%{filter:brightness(.97);}
+  58%{filter:brightness(.9);}
+}
+
+/* =========================================================
+   NARROW SCREENS
+   ========================================================= */
+@media(max-width:860px){
+  .rcv-glass{
+    grid-template-columns:1fr;justify-items:center;gap:12px;padding:12px;
+  }
+  .rcv-lampset-l,.rcv-lampset-r{justify-content:center;}
+  .rcv-meters{order:-1;}
+  .rcv-meter-face{width:96px;}
+  .rcv-selectors{grid-template-columns:repeat(3,1fr);gap:8px;padding:11px;}
+}
+@media(max-width:560px){
+  .rcv-face{padding:16px 12px 13px;}
+  .rcv-selectors{grid-template-columns:repeat(2,1fr);}
+  .rcv-input{min-height:88px;padding:10px 10px 12px;}
+  .rcv-dial-glass{height:38px;padding:0 9px;}
+  .rcv-dial-tag{font-size:8px;letter-spacing:.14em;}
+  .rcv-ticks b{font-size:8px;}
+  .rcv-lamp{font-size:8px;padding:4px 6px;letter-spacing:.1em;}
+  .rcv-strip{font-size:8.5px;letter-spacing:.14em;}
+}
+
+/* Reduced motion: lamps stay lit and steady, no flicker, no sheen. */
+@media (prefers-reduced-motion:reduce){
+  .rcv-face::after{display:none;}
+  .is-flicker,.is-flicker.flk-slow,
+  .receiver.is-dip .rcv-glass,
+  .receiver.is-dip .rcv-dial-glass,
+  .receiver.is-dip .rcv-selectors{animation:none !important;}
+}

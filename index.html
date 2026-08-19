@@ -18,6 +18,9 @@
 <link rel="stylesheet" href="assets/css/05-components.css">
 <link rel="stylesheet" href="assets/css/06-spotify.css">
 <link rel="stylesheet" href="assets/css/07-ambient.css">
+<link rel="stylesheet" href="assets/css/08-liner.css">
+<link rel="stylesheet" href="assets/css/09-receiver.css">
+<link rel="stylesheet" href="assets/css/10-deck.css">
 </head>
 <body>
 
@@ -29,6 +32,16 @@
 </div>
 
 <div class="scope-ctl" id="scopeCtl">
+  <!-- Minimize handle. When the panel is collapsed this button IS the panel —
+       it shrinks down to a single discreet dot, and it inherits the hero-only
+       show/hide behaviour from .scope-ctl, so it never follows you down the page. -->
+  <button class="sc-min" id="scMin" type="button" aria-expanded="true" aria-controls="scBody"
+          aria-label="Hide oscilloscope controls" title="Hide oscilloscope controls">
+    <svg class="sc-min-ico sc-ico-wave" viewBox="0 0 30 20" aria-hidden="true"><path d="M1 10 C4 2,7 2,10 10 S16 18,19 10 S25 2,29 10"/></svg>
+    <svg class="sc-min-ico sc-ico-chev" viewBox="0 0 30 20" aria-hidden="true"><path d="M9 8 L15 14 L21 8"/></svg>
+  </button>
+
+  <div class="sc-body" id="scBody">
   <div class="sc-group">
     <div class="sc-chips" id="scChips">
       <button class="sc-chip on" data-wave="sine" aria-pressed="true" aria-label="Sine wave" title="Sine"><svg viewBox="0 0 30 20" aria-hidden="true"><path d="M1 10 C4 2,7 2,10 10 S16 18,19 10 S25 2,29 10"/></svg></button>
@@ -64,6 +77,7 @@
     <button class="sc-toggle" id="scDual" aria-pressed="false" aria-label="Second trace" title="Second trace">&times;2</button>
     <span class="sc-cap">Dual</span>
   </div>
+  </div>
 </div>
 
 <div class="side-rail" aria-hidden="true">
@@ -75,6 +89,7 @@
   <div class="wrap">
     <a href="#top" class="brand"><span class="disc" id="navDisc"></span>Kyle Offenbacher<span class="full liner" style="color:var(--manila-dim);font-size:12px;"> // data analyst</span></a>
     <div class="nav-links">
+      <a href="#liner">Liner notes</a>
       <a href="#work">Tracklist</a>
       <a href="#toolkit">Toolkit</a>
       <a href="#rotation">Rotation</a>
@@ -125,22 +140,175 @@
   </div>
 </header>
 
+<!-- THE LINER NOTES
+     A gatefold sleeve. Both pages are folded back on their spine until you
+     scroll into the section, then they open flat; scrolling past folds them
+     shut again. Everything inside is generated from `experience`, `skills`,
+     `education` and `about` in assets/js/02-data.js — edit there, not here. -->
+<section class="liner-section" id="liner">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <div class="eyebrow center">The liner notes</div>
+      <h2>Open the gatefold.</h2>
+      <p>Credits, personnel and sleeve notes — the record of the work behind the record.</p>
+    </div>
+
+    <div class="gatefold" id="gatefold">
+      <div class="gf-shadow" aria-hidden="true"></div>
+      <div class="gf-stage">
+        <!-- LEFT PAGE -->
+        <div class="gf-page gf-left">
+          <div class="gf-paper">
+            <div class="gf-page-head">
+              <span class="gf-side">Side A</span>
+              <span class="gf-rule" aria-hidden="true"></span>
+              <span class="gf-kicker">Track record</span>
+            </div>
+            <h3 class="gf-title">Where I&rsquo;ve been recorded</h3>
+            <div class="gf-xp" id="gfExperience"></div>
+          </div>
+        </div>
+
+        <!-- SPINE -->
+        <div class="gf-spine" aria-hidden="true">
+          <span class="gf-spine-text">Kyle Offenbacher &middot; Liner Notes</span>
+        </div>
+
+        <!-- RIGHT PAGE -->
+        <div class="gf-page gf-right">
+          <div class="gf-paper">
+            <div class="gf-page-head">
+              <span class="gf-side">Side B</span>
+              <span class="gf-rule" aria-hidden="true"></span>
+              <span class="gf-kicker">Personnel &amp; notes</span>
+            </div>
+
+            <div class="gf-block">
+              <h4 class="gf-h4">Personnel</h4>
+              <div class="gf-skills" id="gfSkills"></div>
+            </div>
+
+            <div class="gf-block">
+              <h4 class="gf-h4">Recorded at</h4>
+              <div class="gf-edu" id="gfEducation"></div>
+            </div>
+
+            <div class="gf-block">
+              <h4 class="gf-h4">Sleeve notes</h4>
+              <div class="gf-about" id="gfAbout"></div>
+              <dl class="gf-facts" id="gfFacts"></dl>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gf-hint" id="gfHint" aria-hidden="true">scroll to open</div>
+    </div>
+  </div>
+</section>
+
+<!-- THE TRACKLIST — modelled on a Pioneer SX-1250 receiver face.
+     The 16 project slots are the illuminated input selectors; loaded ones
+     glow, empty ones stay dark. The dial pointer and the signal meter track
+     whichever slot you're on, and 06-tracklist.js flickers the lamps at
+     random the way warm gear does. Clicking a lit slot opens the project. -->
 <section class="jukebox-section" id="work">
   <div class="wrap">
     <div class="sec-head center reveal">
       <div class="eyebrow center">The tracklist</div>
-      <h2>Load a track.</h2>
-      <p>Lit buttons are loaded with a project. Dim slots are still being recorded in the studio. Click one to drop the needle.</p>
+      <h2>Select an input.</h2>
+      <p>Lit selectors are loaded with a project. Dark ones are still being recorded in the studio. Press one to drop the needle.</p>
     </div>
-    <div class="panel reveal">
-      <div class="panel-top">
-        <span>Selector · 16 slots</span>
-        <span style="display:flex;align-items:center;gap:12px;">
-          <span id="loadedCount">— loaded</span>
-          <span class="pt-lamps"><i></i><i></i><i></i></span>
-        </span>
+
+    <div class="receiver reveal" id="receiver">
+      <div class="rcv-face">
+        <div class="rcv-screws" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+        <!-- ===== upper glass: status lamps, meters, bank lamps ===== -->
+        <div class="rcv-glass">
+          <div class="rcv-lampset rcv-lampset-l" id="rcvStatus">
+            <span class="rcv-lamp is-on" data-lamp="power">Power</span>
+            <span class="rcv-lamp is-on" data-lamp="stereo">Stereo</span>
+            <span class="rcv-lamp" data-lamp="tuned">Tuned</span>
+          </div>
+
+          <div class="rcv-meters">
+            <div class="rcv-meter">
+              <div class="rcv-meter-face">
+                <svg class="rcv-scale" viewBox="0 0 120 54" aria-hidden="true">
+                  <path d="M12 48 A 52 52 0 0 1 108 48" fill="none" stroke="#6E5F42" stroke-width="1.2" opacity=".8"/>
+                  <g stroke="#544729" stroke-width="1.4" stroke-linecap="round">
+                    <line x1="14"  y1="45" x2="18"  y2="39"/>
+                    <line x1="32"  y1="26" x2="35"  y2="31"/>
+                    <line x1="60"  y1="19" x2="60"  y2="26"/>
+                    <line x1="88"  y1="26" x2="85"  y2="31"/>
+                    <line x1="106" y1="45" x2="102" y2="39"/>
+                  </g>
+                  <g stroke="#7A6845" stroke-width="1" opacity=".65" stroke-linecap="round">
+                    <line x1="22" y1="35" x2="24.5" y2="31"/>
+                    <line x1="45" y1="21.5" x2="46.5" y2="26"/>
+                    <line x1="75" y1="21.5" x2="73.5" y2="26"/>
+                    <line x1="98" y1="35" x2="95.5" y2="31"/>
+                  </g>
+                  <path d="M76 22.5 A 52 52 0 0 1 107 46" fill="none" stroke="#B4472F" stroke-width="2" opacity=".55" stroke-linecap="round"/>
+                </svg>
+                <span class="rcv-needle" id="mtrSignal"></span>
+                <span class="rcv-pivot" aria-hidden="true"></span>
+              </div>
+              <span class="rcv-meter-cap">Signal</span>
+            </div>
+            <div class="rcv-meter">
+              <div class="rcv-meter-face">
+                <svg class="rcv-scale" viewBox="0 0 120 54" aria-hidden="true">
+                  <path d="M12 48 A 52 52 0 0 1 108 48" fill="none" stroke="#6E5F42" stroke-width="1.2" opacity=".8"/>
+                  <g stroke="#544729" stroke-width="1.4" stroke-linecap="round">
+                    <line x1="23" y1="34" x2="26" y2="30"/>
+                    <line x1="60" y1="19" x2="60" y2="27"/>
+                    <line x1="97" y1="34" x2="94" y2="30"/>
+                  </g>
+                  <g stroke="#7A6845" stroke-width="1" opacity=".6" stroke-linecap="round">
+                    <line x1="40" y1="24" x2="42" y2="28.5"/>
+                    <line x1="80" y1="24" x2="78" y2="28.5"/>
+                  </g>
+                  <line x1="60" y1="18" x2="60" y2="50" stroke="#B4472F" stroke-width="1.2" opacity=".55"/>
+                </svg>
+                <span class="rcv-needle" id="mtrTuning"></span>
+                <span class="rcv-pivot" aria-hidden="true"></span>
+              </div>
+              <span class="rcv-meter-cap">Tuning</span>
+            </div>
+          </div>
+
+          <div class="rcv-lampset rcv-lampset-r" id="rcvBanks">
+            <span class="rcv-lamp" data-bank="A">Bank A</span>
+            <span class="rcv-lamp" data-bank="B">Bank B</span>
+            <span class="rcv-lamp" data-bank="C">Bank C</span>
+            <span class="rcv-lamp" data-bank="D">Bank D</span>
+          </div>
+        </div>
+
+        <!-- ===== dial scale ===== -->
+        <div class="rcv-dial">
+          <div class="rcv-dial-glass">
+            <span class="rcv-dial-tag rcv-dial-tag-l">SEL</span>
+            <!-- the pointer lives inside the tick track so both are
+                 positioned against the same width; parked on the glass it
+                 would be measuring a different box and sit off its mark -->
+            <div class="rcv-ticks" id="rcvTicks" aria-hidden="true">
+              <span class="rcv-pointer" id="rcvPointer"></span>
+            </div>
+            <span class="rcv-dial-tag rcv-dial-tag-r">SLOT</span>
+          </div>
+        </div>
+
+        <!-- ===== the 16 input selectors ===== -->
+        <div class="rcv-selectors" id="trackGrid"></div>
+
+        <!-- ===== bottom strip ===== -->
+        <div class="rcv-strip">
+          <span class="rcv-model">Stereo Selector &middot; Model KO-16</span>
+          <span class="rcv-readout"><span id="loadedCount">— loaded</span></span>
+        </div>
       </div>
-      <div class="grid" id="trackGrid"></div>
     </div>
   </div>
 </section>
@@ -149,30 +317,69 @@
   <div class="tt-scroll" id="ttScroll">
     <div class="tt-sticky">
       <div class="tt-inner">
-        <div class="plinth" aria-hidden="true">
-          <div class="plinth-top">
-            <div class="platter-rig">
-              <div class="platter-base"></div>
-              <div class="platter-disc" id="platterDisc">
-                <div class="platter-label">
-                  <span class="pl-num" id="plNum">01</span>
-                  <span class="pl-txt" id="plTxt">SQL &amp; Excel</span>
+        <!-- THE DECK
+             Built as a real object: a perspective scene tilted back so you
+             look down at the plinth, a platter with an actual machined side
+             wall, the record sitting proud of the mat, and a tonearm with a
+             counterweight and headshell that casts a shadow onto the vinyl.
+             The arm still drops on scroll — 08-turntable.js drives it. -->
+        <div class="deck-scene" id="deckScene" aria-hidden="true">
+          <div class="deck-tilt" id="deckTilt">
+            <div class="plinth">
+              <div class="plinth-face"></div>
+              <div class="plinth-top">
+                <!-- the specular pass across the brushed top. It needs its
+                     own clipping box: .plinth-top can't clip without
+                     flattening the 3D scene. -->
+                <span class="plinth-sheen" aria-hidden="true"><i></i></span>
+                <div class="plinth-brand">KO&middot;AUDIO</div>
+
+                <div class="platter-rig">
+                  <span class="platter-shadow"></span>
+                  <span class="platter-wall"></span>
+                  <div class="platter-base">
+                    <span class="platter-strobe" id="platterStrobe"></span>
+                    <span class="platter-mat"></span>
+                  </div>
+
+                  <div class="platter-disc" id="platterDisc">
+                    <span class="disc-grooves"></span>
+                    <span class="disc-sheen"></span>
+                    <div class="platter-label">
+                      <span class="pl-num" id="plNum">01</span>
+                      <span class="pl-txt" id="plTxt">SQL &amp; Excel</span>
+                    </div>
+                  </div>
+
+                  <span class="platter-spindle"></span>
+
+                  <div class="platter-arm" id="platterArm">
+                    <span class="arm-pillar"></span>
+                    <span class="arm-tube"></span>
+                    <span class="arm-weight"></span>
+                    <span class="arm-head"></span>
+                    <span class="arm-stylus"></span>
+                    <span class="arm-cast"></span>
+                  </div>
+                  <span class="arm-rest"></span>
+                </div>
+
+                <div class="deck-controls">
+                  <span class="deck-power"><i></i>ON</span>
+                  <div class="rpm-btns"><span class="rpm-btn on">33⅓</span><span class="rpm-btn">45</span></div>
+                  <div class="pitch">
+                    <span class="pitch-slot"><i class="pitch-knob"></i></span>
+                    <span class="pitch-cap">Pitch</span>
+                  </div>
+                </div>
+
+                <div class="plinth-strip">
+                  <span class="plinth-readout" id="platterRpm">Track 1 of 3</span>
                 </div>
               </div>
-              <div class="platter-spindle"></div>
-              <div class="platter-arm" id="platterArm">
-                <svg viewBox="0 0 100 100" width="100%" height="100%">
-                  <circle cx="86" cy="14" r="10" fill="#B0B4B8" stroke="#6E7278" stroke-width="1"/>
-                  <rect x="22" y="10.5" width="64" height="6" rx="3" fill="#C9CDD1"/>
-                  <rect x="18" y="9" width="12" height="10" rx="2" fill="#2A2C2F"/>
-                </svg>
-              </div>
-            </div>
-            <div class="plinth-strip">
-              <div class="rpm-btns"><span class="rpm-btn on">33⅓</span><span class="rpm-btn">45</span></div>
-              <span class="plinth-readout" id="platterRpm">Track 1 of 3</span>
             </div>
           </div>
+          <span class="deck-floor"></span>
         </div>
 
         <div>
@@ -204,6 +411,7 @@
 </section>
 
 <section class="rotation-section" id="rotation">
+  <span class="rot-iris" aria-hidden="true"></span>
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="eyebrow">The rotation</div>
@@ -213,6 +421,52 @@
       <div class="reveal">
         <p>Music isn't just a fun footnote on my resume. It's one of my biggest passions. I've always been the person sorting through new music, finding hidden gems, and exploring new territories.</p>
         <p>If I'm not working, I'm probably listening to something new. Take a listen below to my current favorites and old classics. I really do love all these songs so feel free to ask me about any of them!</p>
+
+        <!-- THE CD DECK
+             Wired to the crate: picking a track loads the disc, spins it up
+             and puts the cover art on it. 10-spotify.js drives it through
+             cdLoad() / cdStop() / cdEject(). -->
+        <div class="cd-deck" id="cdDeck">
+          <div class="cd-face">
+            <div class="cd-screws" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+            <div class="cd-bay">
+              <div class="cd-well" aria-hidden="true">
+                <span class="cd-well-ring"></span>
+                <span class="cd-well-spindle"></span>
+              </div>
+              <div class="cd-disc" id="cdDisc" aria-hidden="true">
+                <span class="cd-art"><img id="cdArt" alt=""></span>
+                <span class="cd-data"></span>
+                <span class="cd-iris"></span>
+                <span class="cd-gloss"></span>
+                <span class="cd-hole"></span>
+              </div>
+              <span class="cd-laser" aria-hidden="true"></span>
+              <div class="cd-door" aria-hidden="true"><span></span></div>
+            </div>
+
+            <div class="cd-console">
+              <div class="cd-lcd">
+                <div class="cd-lcd-top">
+                  <span class="cd-mode" id="cdMode">Standby</span>
+                  <span class="cd-lamps" aria-hidden="true"><i class="cd-lamp" id="cdLampPlay"></i><i class="cd-lamp cd-lamp-dim"></i></span>
+                </div>
+                <div class="cd-lcd-title" id="cdTitle">No disc</div>
+                <div class="cd-lcd-artist" id="cdArtist">Pick a track from the crate</div>
+                <div class="cd-vu" id="cdVu" aria-hidden="true"></div>
+              </div>
+              <div class="cd-transport">
+                <button type="button" class="cd-btn" id="cdBtnPrev" aria-label="Previous track"><b class="ic-prev"></b></button>
+                <button type="button" class="cd-btn cd-btn-main" id="cdBtnPlay" aria-label="Play">
+                  <b class="ic-play"></b><b class="ic-pause"></b>
+                </button>
+                <button type="button" class="cd-btn" id="cdBtnNext" aria-label="Next track"><b class="ic-next"></b></button>
+              </div>
+            </div>
+          </div>
+          <div class="cd-badge" aria-hidden="true">Compact Disc &middot; Digital Audio</div>
+        </div>
       </div>
       <!-- Genre buttons, shuffle, and the rows are all generated from the
            `crate` array in assets/js/02-data.js -->
@@ -230,9 +484,25 @@
   </div>
 </section>
 
+<!-- THE OUTRO
+     The speakers and the contact form share one background. Everything
+     ambient for both sections lives on .outro-bg below, so the wash, the
+     shaft of light and the record grooves run continuously from the
+     speaker cones down through the form instead of stopping at the seam.
+     Section padding is unchanged — only the backdrop was merged. -->
+<div class="outro">
+  <div class="outro-bg" aria-hidden="true">
+    <span class="ob-wash"></span>
+    <span class="ob-groove ob-groove-a"></span>
+    <span class="ob-groove ob-groove-b"></span>
+    <span class="ob-shaft"></span>
+  </div>
+
 <div class="speakers-band">
   <div class="wrap">
     <div class="spk-row reveal">
+      <!-- ripples start at the cones and roll down over the form -->
+      <div class="spk-field" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       <div class="speaker" aria-hidden="true">
         <div class="spk-baffle">
           <span class="tweeter"></span>
@@ -302,6 +572,7 @@
     </div>
   </div>
 </section>
+</div><!-- /.outro -->
 
 <footer>
   <div class="wrap">
@@ -366,6 +637,7 @@
 <script src="assets/js/07-contact.js"></script>
 <script src="assets/js/08-turntable.js"></script>
 <script src="assets/js/09-main.js"></script>
+<script src="assets/js/11-liner.js"></script>
 
 <!-- Now playing bar. One Spotify player, controlled from the crate rows. -->
 <div class="np-bar" id="npBar" aria-live="polite">
@@ -376,6 +648,13 @@
       <span class="np-artist" id="npArtist"></span>
     </span>
     <div class="np-embed" id="npEmbed"></div>
+    <!-- Shown only when Spotify's embed never loads (ad blocker, tracker
+         blocking, or their CDN erroring). Replaces the player with a way
+         out rather than leaving the bar sitting there doing nothing. -->
+    <a class="np-fallback" id="npFallback" target="_blank" rel="noopener" href="https://open.spotify.com/">
+      <span class="npf-msg">Player blocked in this browser</span>
+      <span class="npf-cta">Open in Spotify &#8599;</span>
+    </a>
     <button class="np-btn" id="npPrev" aria-label="Previous track">&#8249;</button>
     <button class="np-btn" id="npNext" aria-label="Next track">&#8250;</button>
     <button class="np-btn np-close" id="npClose" aria-label="Close player">&#10005;</button>

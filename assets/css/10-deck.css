@@ -1,0 +1,651 @@
+/* THE DECKS — the 3D turntable, and the CD player in the crate section.
+
+   Both are built out of the same material language as the receiver:
+   walnut plinth, brushed aluminium top, warm amber lamps. The turntable
+   is a real 3D scene (perspective + rotateX) so the plinth has a visible
+   front edge and the platter has a machined side wall; the tonearm sits
+   above the record on its own Z plane and casts a shadow onto it. */
+
+/* =========================================================
+   TURNTABLE
+   ========================================================= */
+.deck-scene{
+  position:relative;
+  perspective:1500px;
+  perspective-origin:50% 34%;
+  padding:10px 0 34px;
+}
+.deck-tilt{
+  transform-style:preserve-3d;
+  /* the lean that makes it read as an object on a shelf. --deck-mx/my are
+     nudged by 08-turntable.js from the pointer for a little parallax. */
+  transform:
+    rotateX(calc(13deg + var(--deck-my,0) * -3deg))
+    rotateY(calc(var(--deck-mx,0) * 4deg))
+    rotateZ(calc(var(--deck-mx,0) * -0.6deg));
+  transition:transform .5s cubic-bezier(.22,1,.36,1);
+  will-change:transform;
+}
+
+/* the shadow the whole deck throws on the floor */
+.deck-floor{
+  position:absolute;left:50%;bottom:6px;width:82%;height:44px;
+  transform:translateX(-50%);pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,.72),transparent 72%);
+  filter:blur(13px);
+}
+
+.plinth{
+  position:relative;transform-style:preserve-3d;
+  border-radius:7px;padding:15px;
+  background:var(--veneer);
+  box-shadow:
+    0 42px 74px -30px rgba(0,0,0,.92),
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 -2px 0 rgba(0,0,0,.5);
+}
+/* the front edge of the plinth, stood up in Z so you see the chassis depth */
+.plinth-face{
+  position:absolute;left:0;right:0;top:100%;height:26px;
+  transform-origin:50% 0%;
+  transform:rotateX(-90deg);
+  border-radius:0 0 7px 7px;
+  background:var(--veneer);
+  box-shadow:inset 0 3px 6px rgba(0,0,0,.5);
+}
+.plinth-face::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.6));
+}
+
+/* No overflow:hidden here — an ancestor that clips would flatten the 3D
+   scene and the platter's depth would collapse. Nothing inside overflows
+   anyway; the texture layer is inset:0 with a matching radius. */
+.plinth-top{
+  position:relative;transform-style:preserve-3d;
+  border-radius:4px;padding:20px 20px 16px;
+  background:linear-gradient(180deg,#D8DBDE 0%,#BBBFC4 18%,#A6AAAF 56%,#878B91 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.7),
+    inset 0 -1px 0 rgba(0,0,0,.4),
+    inset 0 0 30px rgba(0,0,0,.2);
+}
+.plinth-top::after{
+  content:'';position:absolute;inset:0;pointer-events:none;border-radius:4px;
+  background:var(--brushed);opacity:.5;
+}
+/* the specular pass, in its own clipping box */
+.plinth-sheen{
+  position:absolute;inset:0;border-radius:4px;overflow:hidden;
+  pointer-events:none;z-index:1;
+}
+.plinth-sheen i{
+  position:absolute;top:-60%;bottom:-60%;left:-45%;width:26%;display:block;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);
+  animation:deckSheen 26s ease-in-out infinite;animation-delay:3s;
+}
+@keyframes deckSheen{
+  0%{transform:translateX(0) rotate(12deg);}
+  55%{transform:translateX(620%) rotate(12deg);}
+  100%{transform:translateX(620%) rotate(12deg);}
+}
+.plinth-brand{
+  position:relative;z-index:2;
+  font-family:'Barlow Semi Condensed',sans-serif;font-weight:600;
+  text-transform:uppercase;letter-spacing:.28em;font-size:8.5px;
+  color:var(--engrave-dim);margin-bottom:10px;
+}
+
+/* ---------- the platter ---------- */
+.platter-rig{
+  position:relative;width:100%;max-width:252px;margin:0 auto;aspect-ratio:1;
+  z-index:2;transform-style:preserve-3d;
+}
+
+/* soft contact shadow the platter drops onto the plinth top */
+.platter-shadow{
+  position:absolute;inset:-3%;border-radius:50%;
+  background:radial-gradient(circle at 50% 58%,rgba(0,0,0,.55),transparent 68%);
+  filter:blur(6px);
+}
+
+/* the machined side wall of the platter — a conic ring gives it real
+   cylindrical shading rather than a flat outline */
+.platter-wall{
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 210deg,
+    #55595F 0deg,#9CA0A6 40deg,#C9CDD1 78deg,#8E9298 120deg,
+    #4E5257 190deg,#7C8086 250deg,#B4B8BD 300deg,#55595F 360deg);
+  box-shadow:0 6px 14px rgba(0,0,0,.55);
+}
+/* the fine turned-metal rings on the wall */
+.platter-wall::after{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:repeating-radial-gradient(circle at center,
+    rgba(255,255,255,.10) 0 1px, transparent 1px 3px);
+  opacity:.55;
+}
+
+.platter-base{
+  position:absolute;inset:3.5%;border-radius:50%;overflow:hidden;
+  background:radial-gradient(circle at 38% 30%,#93979D,#5A5E64 72%,#43474C);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.28),
+    inset 0 8px 16px rgba(0,0,0,.45);
+}
+/* strobe dots around the platter edge — spins with the disc */
+.platter-strobe{
+  position:absolute;inset:0;border-radius:50%;
+  background:repeating-conic-gradient(from 0deg,
+    rgba(255,196,107,.5) 0deg 1.1deg, transparent 1.1deg 4.4deg);
+  mask-image:radial-gradient(circle closest-side at center,transparent 92%,#000 93.5%,#000 97.5%,transparent 99%);
+  -webkit-mask-image:radial-gradient(circle closest-side at center,transparent 92%,#000 93.5%,#000 97.5%,transparent 99%);
+  animation:strobeSpin 2.6s linear infinite;
+}
+@keyframes strobeSpin{to{transform:rotate(360deg);}}
+/* the rubber mat */
+.platter-mat{
+  position:absolute;inset:6%;border-radius:50%;
+  background:
+    repeating-radial-gradient(circle at center,#1E1B19 0 2px,#171412 2px 4px),
+    radial-gradient(circle at 40% 32%,#2A2623,#131110 78%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06),inset 0 4px 10px rgba(0,0,0,.6);
+}
+
+/* ---------- the record ---------- */
+/* The spin comes in as a custom property rather than a whole transform, so
+   the JS in 09-main.js can turn the record without clobbering the
+   translateZ that lifts it off the mat. Same trick on the tonearm. */
+.platter-disc{
+  position:absolute;inset:11%;border-radius:50%;
+  transform:translateZ(6px) rotate(var(--disc-spin,0deg));
+  will-change:transform;
+  background:radial-gradient(circle at 40% 30%,#26221F,#0B0908 74%);
+  box-shadow:
+    0 5px 14px rgba(0,0,0,.65),
+    inset 0 0 0 1px rgba(255,255,255,.07);
+}
+/* Vinyl reads as near-black with a fine concentric shimmer, not as a
+   striped donut — keep the contrast low and let the sheen do the work. */
+.disc-grooves{
+  position:absolute;inset:0;border-radius:50%;
+  background:
+    repeating-radial-gradient(circle at center,
+      rgba(255,255,255,.045) 0 0.5px, rgba(0,0,0,.14) 0.5px 2.5px),
+    /* the wider band divisions between tracks */
+    repeating-radial-gradient(circle at center,
+      rgba(255,255,255,.05) 0 1px, transparent 1px 15px);
+  mask-image:radial-gradient(circle closest-side at center,transparent 30%,#000 33%,#000 96%,transparent 99%);
+  -webkit-mask-image:radial-gradient(circle closest-side at center,transparent 30%,#000 33%,#000 96%,transparent 99%);
+  opacity:.6;
+}
+/* the light sweeping across the vinyl as it turns — counter-rotated by the
+   parent's spin, so it reads as a fixed reflection rather than a painted-on
+   smear. Sits above the grooves, below the label. */
+.disc-sheen{
+  position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,
+    transparent 0deg, rgba(255,255,255,.11) 22deg, transparent 58deg,
+    transparent 180deg, rgba(255,255,255,.08) 202deg, transparent 238deg);
+  mix-blend-mode:screen;
+}
+/* The label is counter-rotated by 09-main.js so the track name stays
+   upright and readable while the record turns under it. */
+.platter-label{
+  position:absolute;top:50%;left:50%;width:38%;height:38%;border-radius:50%;
+  transform:translate(-50%,-50%) rotate(var(--label-counter,0deg));
+  background:
+    radial-gradient(circle at 38% 30%,rgba(255,255,255,.3),transparent 58%),
+    var(--tt-accent,var(--brass));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  color:#1A1206;text-align:center;padding:6px;
+  transition:background .5s var(--ease);
+  font-family:'Barlow Semi Condensed',sans-serif;text-transform:uppercase;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.22),0 1px 3px rgba(0,0,0,.4);
+}
+.platter-label .pl-num{font-size:11px;letter-spacing:.18em;font-weight:600;}
+.platter-label .pl-txt{font-size:8.5px;line-height:1.2;opacity:.82;letter-spacing:.06em;}
+
+.platter-spindle{
+  position:absolute;top:50%;left:50%;width:10px;height:10px;border-radius:50%;
+  transform:translate(-50%,-50%) translateZ(10px);z-index:6;
+  background:radial-gradient(circle at 34% 30%,#EDEFF1,#9DA1A7 62%,#6E7278);
+  box-shadow:0 2px 4px rgba(0,0,0,.7);
+}
+
+/* ---------- the tonearm ---------- */
+/* The arm box is anchored so that its pivot (the transform-origin) lands
+   just outside the top-right of the platter, exactly where the bearing
+   sits on a real deck. The tube then reaches down-left across the record,
+   and the rotation range in 09-main.js (-30deg parked → -4deg playing)
+   walks the stylus from the rest post to the outer groove. */
+.platter-arm{
+  position:absolute;top:-13%;right:-15%;width:62%;height:62%;
+  transform-origin:80% 20%;
+  transform:translateZ(24px) rotate(var(--arm-rot,-30deg));
+  z-index:7;will-change:transform;
+  transition:transform .5s var(--ease);
+}
+.platter-arm.no-tween{transition:none;}
+
+/* the bearing pillar the arm pivots on — centred on the origin */
+.arm-pillar{
+  position:absolute;top:11%;left:71%;width:18%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 34% 28%,#F2F4F6,#9DA1A7 54%,#54585E);
+  box-shadow:0 4px 9px rgba(0,0,0,.65),inset 0 -1px 2px rgba(0,0,0,.45);
+}
+.arm-pillar::after{
+  content:'';position:absolute;inset:28%;border-radius:50%;
+  background:radial-gradient(circle at 36% 32%,#6E7278,#2A2C2F);
+}
+/* the tube runs from just left of the pivot out to the headshell */
+.arm-tube{
+  position:absolute;top:18.5%;left:16%;width:63%;height:4.6%;border-radius:99px;
+  background:linear-gradient(180deg,#F2F4F6 0%,#C9CDD1 34%,#878B91 70%,#5A5E64 100%);
+  box-shadow:0 2px 5px rgba(0,0,0,.5);
+}
+/* counterweight, on the stub behind the pivot */
+.arm-weight{
+  position:absolute;top:14%;left:88%;width:13%;aspect-ratio:1.1;border-radius:24%;
+  background:linear-gradient(180deg,#54585E,#232528);
+  box-shadow:0 3px 7px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.2);
+}
+/* the headshell at the business end, angled the way a real one is */
+.arm-head{
+  position:absolute;top:15%;left:7.5%;width:11%;aspect-ratio:1.15;border-radius:2px;
+  background:linear-gradient(160deg,#43464B,#191B1E);
+  box-shadow:0 3px 7px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.22);
+  transform:rotate(-16deg);
+}
+.arm-stylus{
+  position:absolute;top:25%;left:11%;width:2px;height:5.5%;border-radius:1px;
+  background:linear-gradient(180deg,#E4E7EA,#6E7278);
+  box-shadow:0 0 4px rgba(0,0,0,.7);
+}
+/* the shadow the arm drops onto the record — offset down-right to match
+   the light coming from the top left */
+.arm-cast{
+  position:absolute;top:18.5%;left:16%;width:63%;height:4.6%;border-radius:99px;
+  background:rgba(0,0,0,.42);filter:blur(3.5px);
+  transform:translate(6px,11px);
+  z-index:-1;
+}
+
+/* the arm rest the tube parks on */
+.arm-rest{
+  position:absolute;bottom:12%;right:-6%;width:6%;height:15%;border-radius:2px 2px 1px 1px;
+  transform:translateZ(12px);
+  background:linear-gradient(180deg,#E4E7EA,#82868C 60%,#5A5E64);
+  box-shadow:0 4px 8px rgba(0,0,0,.6);
+}
+.arm-rest::after{
+  content:'';position:absolute;top:-3px;left:-40%;right:-40%;height:5px;border-radius:3px;
+  background:linear-gradient(180deg,#3A3D42,#1C1E21);
+  box-shadow:0 1px 2px rgba(0,0,0,.6);
+}
+
+/* ---------- plinth controls ---------- */
+.deck-controls{
+  position:relative;z-index:2;margin-top:16px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+.deck-power{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'Barlow Semi Condensed',sans-serif;font-weight:600;
+  text-transform:uppercase;letter-spacing:.2em;font-size:8.5px;color:var(--engrave-dim);
+}
+.deck-power i{
+  width:7px;height:7px;border-radius:50%;background:#FF8A2B;
+  box-shadow:0 0 8px rgba(255,138,43,.9);
+  animation:ledBreathe 3.4s ease-in-out infinite;
+}
+.rpm-btns{display:flex;gap:6px;}
+.rpm-btn{
+  font-family:'Barlow Semi Condensed',sans-serif;font-size:9.5px;font-weight:600;
+  letter-spacing:.12em;padding:6px 10px;border-radius:2px;color:var(--engrave-dim);
+  background:linear-gradient(180deg,#C6CACE,#9DA1A7);border:1px solid rgba(0,0,0,.3);
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset;
+}
+.rpm-btn.on{
+  color:#2A1403;background:linear-gradient(180deg,#FFC46B,#E08A22);
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 0 10px rgba(255,138,43,.5);
+}
+.pitch{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.pitch-slot{
+  position:relative;width:66px;height:8px;border-radius:99px;
+  background:linear-gradient(180deg,#6E7278,#A6AAAF);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.6);
+}
+.pitch-knob{
+  position:absolute;top:50%;left:50%;width:15px;height:17px;border-radius:2px;
+  transform:translate(-50%,-50%);
+  background:linear-gradient(180deg,#EDEFF1,#8E9298);
+  box-shadow:0 2px 4px rgba(0,0,0,.5),inset 0 -1px 0 rgba(0,0,0,.3);
+}
+.pitch-knob::after{
+  content:'';position:absolute;top:50%;left:2px;right:2px;height:1px;
+  background:rgba(0,0,0,.45);transform:translateY(-50%);
+}
+.pitch-cap{
+  font-family:'Barlow Semi Condensed',sans-serif;font-weight:600;
+  text-transform:uppercase;letter-spacing:.2em;font-size:7.5px;color:var(--engrave-dim);
+}
+.plinth-strip{
+  position:relative;z-index:2;margin-top:12px;padding-top:11px;
+  border-top:1px solid rgba(0,0,0,.2);box-shadow:0 -1px 0 rgba(255,255,255,.3) inset;
+  display:flex;justify-content:flex-end;
+}
+.plinth-readout{
+  font-family:'Barlow Semi Condensed',sans-serif;text-transform:uppercase;
+  letter-spacing:.18em;font-size:9.5px;font-weight:600;color:var(--engrave-dim);
+}
+
+@media(max-width:900px){
+  .deck-scene{perspective:1100px;padding:4px 0 26px;}
+  .deck-tilt{transform:rotateX(9deg);}
+  .plinth-face{height:18px;}
+}
+@media (prefers-reduced-motion:reduce){
+  .deck-scene{perspective:none;}
+  .deck-tilt{transform:none;}
+  .plinth-face{display:none;}
+  .platter-strobe{animation:none;}
+}
+
+/* =========================================================
+   CD PLAYER
+   Lives in the left column of the crate section. Picking a
+   track in the crate loads the disc and puts the cover art
+   on it; 10-spotify.js drives the states.
+   ========================================================= */
+.cd-deck{
+  position:relative;margin-top:30px;max-width:460px;
+  border-radius:6px;padding:11px;
+  background:var(--veneer);
+  box-shadow:0 36px 66px -30px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.10);
+}
+.cd-face{
+  position:relative;border-radius:3px;overflow:hidden;
+  padding:16px;
+  display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;
+  background:linear-gradient(180deg,#D8DBDE 0%,#BBBFC4 18%,#A6AAAF 56%,#878B91 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.7),
+    inset 0 -1px 0 rgba(0,0,0,.4),
+    inset 0 0 30px rgba(0,0,0,.18);
+}
+.cd-face::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:var(--brushed);opacity:.5;
+}
+.cd-screws{position:absolute;inset:0;pointer-events:none;z-index:5;}
+.cd-screws i{
+  position:absolute;width:7px;height:7px;border-radius:50%;
+  background:radial-gradient(circle at 34% 30%,#EDEFF1,#70747A 62%,#4A4D52);
+  box-shadow:0 1px 1px rgba(255,255,255,.5),inset 0 -1px 1px rgba(0,0,0,.45);
+}
+.cd-screws i:nth-child(1){top:6px;left:6px;}
+.cd-screws i:nth-child(2){top:6px;right:6px;}
+.cd-screws i:nth-child(3){bottom:6px;left:6px;}
+.cd-screws i:nth-child(4){bottom:6px;right:6px;}
+
+/* ---------- the disc bay ---------- */
+.cd-bay{
+  position:relative;z-index:2;width:136px;height:136px;border-radius:50%;flex-shrink:0;
+  background:radial-gradient(circle at 42% 34%,#2A2724,#0C0A09 76%);
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.7),
+    inset 0 4px 12px rgba(0,0,0,.85),
+    0 1px 0 rgba(255,255,255,.45);
+  overflow:hidden;
+}
+.cd-well{position:absolute;inset:0;}
+.cd-well-ring{
+  position:absolute;inset:12%;border-radius:50%;
+  border:1px dashed rgba(227,211,179,.13);
+}
+.cd-well-spindle{
+  position:absolute;top:50%;left:50%;width:15px;height:15px;border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle at 36% 32%,#5A5E64,#232528);
+  box-shadow:inset 0 -1px 2px rgba(0,0,0,.7),0 0 0 3px rgba(0,0,0,.5);
+}
+
+/* the disc itself — hidden until a track loads */
+.cd-disc{
+  position:absolute;inset:5%;border-radius:50%;
+  opacity:0;transform:scale(.55) rotate(-40deg);
+  transition:opacity .5s var(--ease),transform .7s var(--ease);
+  will-change:transform;
+}
+.cd-deck.has-disc .cd-disc{opacity:1;transform:scale(1) rotate(0deg);}
+.cd-deck.is-spinning .cd-disc{animation:cdSpin 3.4s linear infinite;}
+@keyframes cdSpin{to{transform:scale(1) rotate(360deg);}}
+
+/* cover art fills the disc face */
+.cd-art{
+  position:absolute;inset:0;border-radius:50%;overflow:hidden;
+  /* the pressed underside of a disc, shown until the cover art loads */
+  background:
+    radial-gradient(circle closest-side at 38% 30%,#8E9299,#4A4E55 62%,#2A2D32 100%);
+}
+.cd-art img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  opacity:0;transition:opacity .5s var(--ease);
+}
+.cd-deck.has-art .cd-art img{opacity:1;}
+
+/* the clear data ring and hub, over the art */
+.cd-data{
+  position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:
+    radial-gradient(circle closest-side at center,
+      transparent 0 20%,
+      rgba(226,232,238,.9) 20% 25%,
+      rgba(190,198,206,.55) 25% 27%,
+      transparent 27.5% 100%);
+}
+/* the rainbow diffraction you get off a CD */
+.cd-iris{
+  position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,
+    rgba(255,90,120,.30), rgba(255,214,90,.26), rgba(120,255,180,.28),
+    rgba(90,190,255,.30), rgba(190,120,255,.26), rgba(255,90,120,.30));
+  mask-image:radial-gradient(circle closest-side at center,transparent 27%,#000 34%,#000 96%,transparent 99%);
+  -webkit-mask-image:radial-gradient(circle closest-side at center,transparent 27%,#000 34%,#000 96%,transparent 99%);
+  mix-blend-mode:screen;opacity:.3;
+}
+/* with art loaded the diffraction pulls right back — the cover is the
+   point of the thing, the rainbow is only there to say "this is a disc" */
+.cd-deck.has-art .cd-iris{opacity:.17;}
+/* no art yet — let the diffraction carry the disc on its own */
+.cd-deck:not(.has-art) .cd-iris{opacity:.5;}
+/* a fixed specular streak so the spin is readable */
+.cd-gloss{
+  position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:linear-gradient(118deg,
+    transparent 36%, rgba(255,255,255,.22) 46%, rgba(255,255,255,.05) 51%, transparent 58%);
+  mix-blend-mode:screen;
+}
+.cd-hole{
+  position:absolute;top:50%;left:50%;width:15%;height:15%;border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle at 36% 32%,#3A3D42,#0C0A09);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);
+}
+
+/* the read laser sweeping under the disc while it plays */
+.cd-laser{
+  position:absolute;left:50%;top:50%;width:44%;height:2px;
+  transform-origin:0 50%;transform:translateY(-50%) rotate(0deg);
+  background:linear-gradient(90deg,rgba(120,255,200,0),rgba(120,255,200,.55));
+  opacity:0;transition:opacity .4s var(--ease);pointer-events:none;
+}
+.cd-deck.is-spinning .cd-laser{opacity:.5;animation:cdLaser 6s ease-in-out infinite alternate;}
+@keyframes cdLaser{
+  from{transform:translateY(-50%) rotate(6deg) scaleX(.45);}
+  to{transform:translateY(-50%) rotate(-6deg) scaleX(1);}
+}
+
+/* the loading door that wipes across the bay when a disc changes */
+.cd-door{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.cd-door span{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,#2A2724,#0C0A09);
+  transform:translateY(-101%);
+}
+.cd-deck.is-loading .cd-door span{animation:cdDoor .62s var(--ease) 1;}
+@keyframes cdDoor{
+  0%{transform:translateY(-101%);}
+  45%{transform:translateY(0);}
+  55%{transform:translateY(0);}
+  100%{transform:translateY(101%);}
+}
+
+/* ---------- console ---------- */
+.cd-console{position:relative;z-index:2;display:flex;flex-direction:column;gap:11px;min-width:0;}
+.cd-lcd{
+  border-radius:3px;padding:10px 12px;min-width:0;
+  background:linear-gradient(180deg,#10201A,#081310);
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.85),0 1px 0 rgba(255,255,255,.45);
+}
+.cd-lcd-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:7px;}
+.cd-mode{
+  font-family:'Barlow Semi Condensed',sans-serif;font-weight:600;
+  text-transform:uppercase;letter-spacing:.2em;font-size:8.5px;
+  color:rgba(111,216,190,.75);
+}
+.cd-lamps{display:flex;gap:5px;}
+.cd-lamp{
+  width:6px;height:6px;border-radius:50%;background:#1E3A32;display:block;
+  transition:background .3s var(--ease),box-shadow .3s var(--ease);
+}
+.cd-deck.is-spinning #cdLampPlay{
+  background:#6FD8BE;box-shadow:0 0 8px rgba(111,216,190,.9);
+}
+.cd-lcd-title{
+  font-family:'Courier Prime',monospace;font-size:12.5px;color:#9BEBD2;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  text-shadow:0 0 9px rgba(111,216,190,.4);
+}
+.cd-lcd-artist{
+  font-family:'Courier Prime',monospace;font-size:10px;color:rgba(111,216,190,.6);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;
+}
+/* level meter — bars are built in 10-spotify.js */
+.cd-vu{display:flex;align-items:flex-end;gap:2px;height:12px;margin-top:8px;}
+.cd-vu i{
+  width:3px;height:2px;border-radius:1px;background:rgba(111,216,190,.28);display:block;
+  transition:height .2s ease-out,background .2s ease-out;
+}
+.cd-deck.is-spinning .cd-vu i{
+  background:rgba(111,216,190,.85);
+  animation:cdVu .8s ease-in-out infinite alternate;
+}
+@keyframes cdVu{from{height:2px;}to{height:12px;}}
+
+.cd-transport{display:flex;align-items:center;gap:8px;}
+.cd-btn{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;padding:0;
+  display:flex;align-items:center;justify-content:center;position:relative;
+  background:linear-gradient(180deg,#C6CACE,#9DA1A7);
+  border:1px solid rgba(0,0,0,.32);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 2px 4px rgba(0,0,0,.3);
+  transition:transform .12s var(--ease),box-shadow .18s var(--ease),
+             background .25s var(--ease),opacity .25s var(--ease);
+}
+.cd-btn:hover{background:linear-gradient(180deg,#D6DADE,#A9ADB3);transform:translateY(-1px);}
+.cd-btn:active{transform:translateY(1px);box-shadow:inset 0 2px 5px rgba(0,0,0,.45);}
+.cd-btn:focus-visible{outline:2px solid var(--lamp);outline-offset:2px;}
+.cd-btn:disabled{opacity:.42;cursor:not-allowed;transform:none;}
+.cd-btn:disabled:hover{background:linear-gradient(180deg,#C6CACE,#9DA1A7);transform:none;}
+.cd-btn-main{width:36px;height:36px;}
+.cd-btn b{display:block;}
+
+.ic-play{width:0;height:0;
+  border-left:10px solid var(--engrave);border-top:6.5px solid transparent;border-bottom:6.5px solid transparent;
+  margin-left:3px;}
+/* the pause bars, swapped in while a track is running */
+.ic-pause{
+  width:10px;height:12px;display:none !important;
+  border-left:3.5px solid var(--engrave);border-right:3.5px solid var(--engrave);
+}
+.cd-deck.is-spinning .ic-play{display:none;}
+.cd-deck.is-spinning .ic-pause{display:block !important;}
+
+.ic-prev,.ic-next{width:9px;height:9px;position:relative;}
+.ic-prev::before,.ic-next::before{
+  content:'';position:absolute;top:0;width:0;height:0;
+  border-top:4.5px solid transparent;border-bottom:4.5px solid transparent;
+}
+.ic-prev::before{left:0;border-right:7px solid var(--engrave);}
+.ic-next::before{right:0;border-left:7px solid var(--engrave);}
+/* the little stop bar on the skip buttons */
+.ic-prev::after,.ic-next::after{
+  content:'';position:absolute;top:0;width:2px;height:9px;background:var(--engrave);
+}
+.ic-prev::after{left:-3px;}
+.ic-next::after{right:-3px;}
+
+.cd-deck.is-spinning .cd-btn-main{
+  background:linear-gradient(180deg,#FFC46B,#E08A22);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 12px rgba(255,138,43,.5);
+}
+.cd-deck.is-spinning .cd-btn-main:hover{
+  background:linear-gradient(180deg,#FFD08A,#F09A2E);
+}
+
+.cd-badge{
+  margin-top:8px;text-align:right;
+  font-family:'Courier Prime',monospace;font-size:8px;letter-spacing:.18em;
+  text-transform:uppercase;color:rgba(227,211,179,.4);
+}
+
+@media(max-width:520px){
+  .cd-face{grid-template-columns:1fr;justify-items:center;gap:14px;}
+  .cd-console{width:100%;}
+  .cd-badge{text-align:center;}
+}
+@media (prefers-reduced-motion:reduce){
+  .cd-deck.is-spinning .cd-disc,
+  .cd-deck.is-spinning .cd-laser,
+  .cd-deck.is-spinning .cd-vu i,
+  .cd-deck.is-loading .cd-door span{animation:none;}
+  .cd-deck.is-spinning .cd-vu i{height:7px;}
+}
+
+/* =========================================================
+   A LITTLE MORE BEHIND THE CRATE
+   The section was flat behind the rows; these sit on the
+   existing .rotation-section ambient layer.
+   ========================================================= */
+.rotation-section::before{
+  background:
+    radial-gradient(ellipse 500px 330px at 82% 16%, rgba(44,101,112,.13), transparent 62%),
+    radial-gradient(ellipse 460px 300px at 10% 88%, rgba(124,43,49,.12), transparent 62%),
+    radial-gradient(ellipse 420px 260px at 26% 40%, rgba(201,154,63,.10), transparent 64%);
+}
+/* a wide CD-diffraction smear low on the section */
+.rotation-section .rot-iris{
+  position:absolute;left:-8%;bottom:-14%;width:62%;height:56%;z-index:-1;pointer-events:none;
+  border-radius:50%;opacity:.16;
+  background:conic-gradient(from 200deg,
+    rgba(255,90,120,.5), rgba(255,214,90,.45), rgba(120,255,180,.5),
+    rgba(90,190,255,.5), rgba(190,120,255,.45), rgba(255,90,120,.5));
+  mask-image:radial-gradient(circle at center,#000 12%,transparent 68%);
+  -webkit-mask-image:radial-gradient(circle at center,#000 12%,transparent 68%);
+  filter:blur(28px);
+  animation:rotIris 42s ease-in-out infinite alternate;
+}
+@keyframes rotIris{
+  0%{transform:translate(0,0) rotate(0deg) scale(1);}
+  100%{transform:translate(5%,-4%) rotate(38deg) scale(1.14);}
+}
+@media (prefers-reduced-motion:reduce){
+  .rotation-section .rot-iris{animation:none;}
+}
+
+/* The deck can't play anything if Spotify's embed never loaded — show it
+   as dead rather than spinning a disc that produces no sound. */
+body.sp-blocked .cd-deck .cd-lcd{filter:saturate(.35) brightness(.85);}
+body.sp-blocked .cd-deck .cd-disc{opacity:.55;}

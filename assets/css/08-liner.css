@@ -1,0 +1,285 @@
+/* THE LINER NOTES — a gatefold sleeve that opens as you scroll.
+
+   How the fold works: .gf-stage is a 3D scene. Each page is hinged on the
+   spine (transform-origin on the inner edge) and rotates about Y. At
+   --gf-open:0 the pages are folded back toward the viewer like a sleeve
+   standing half-open on a shelf; at 1 they lie flat as a spread.
+   11-liner.js sets --gf-open from scroll position, so the sleeve opens on
+   the way in and closes again on the way out.
+
+   Everything here is driven by that one custom property — nothing animates
+   on a timer, so scrubbing back and forth stays exact. */
+
+.liner-section{
+  background:rgba(30,24,21,.55);
+  border-top:1px solid rgba(227,211,179,.09);
+  overflow:hidden;
+}
+
+.gatefold{
+  --gf-open:0;                       /* 0 = shut, 1 = flat open */
+  position:relative;
+  perspective:2000px;
+  perspective-origin:50% 42%;
+  padding:6px 0 4px;
+}
+
+/* contact shadow under the sleeve — tightens as it opens flat */
+.gf-shadow{
+  position:absolute;left:50%;bottom:-6px;
+  width:calc(34% + 52% * var(--gf-open));
+  height:38px;transform:translateX(-50%);
+  background:radial-gradient(ellipse at center,
+    rgba(0,0,0,calc(.62 - .18 * var(--gf-open))), transparent 72%);
+  filter:blur(9px);pointer-events:none;z-index:0;
+}
+
+.gf-stage{
+  position:relative;z-index:1;
+  display:grid;
+  grid-template-columns:1fr 16px 1fr;
+  align-items:stretch;
+  transform-style:preserve-3d;
+  /* the sleeve leans back a touch while shut, then squares up */
+  transform:rotateX(calc(9deg - 9deg * var(--gf-open)))
+            scale(calc(.955 + .045 * var(--gf-open)));
+}
+
+/* ---------- the two pages ---------- */
+.gf-page{
+  position:relative;
+  transform-style:preserve-3d;
+  backface-visibility:hidden;
+  will-change:transform;
+}
+.gf-left{
+  transform-origin:100% 50%;
+  transform:rotateY(calc(-62deg + 62deg * var(--gf-open)));
+}
+.gf-right{
+  transform-origin:0% 50%;
+  transform:rotateY(calc(62deg - 62deg * var(--gf-open)));
+}
+
+/* the printed card itself */
+.gf-paper{
+  position:relative;height:100%;
+  padding:34px clamp(20px,3vw,38px) 38px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.035), rgba(0,0,0,.10)),
+    linear-gradient(155deg,#2C231D 0%,#241C17 42%,#1C1512 100%);
+  border:1px solid rgba(227,211,179,.13);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.07),
+    0 30px 60px -34px rgba(0,0,0,.9);
+}
+.gf-left .gf-paper{border-radius:7px 2px 2px 7px;border-right:none;}
+.gf-right .gf-paper{border-radius:2px 7px 7px 2px;border-left:none;}
+
+/* paper tooth + the crease-shading that sells the fold */
+.gf-paper::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(circle at 1px 1px, rgba(227,211,179,.055) 1px, transparent 1.5px);
+  background-size:3px 3px;opacity:.7;
+}
+.gf-paper::after{
+  content:'';position:absolute;top:0;bottom:0;width:34%;pointer-events:none;
+  opacity:calc(1 - var(--gf-open));
+  transition:opacity .1s linear;
+}
+.gf-left .gf-paper::after{
+  right:0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.55));
+}
+.gf-right .gf-paper::after{
+  left:0;background:linear-gradient(270deg,transparent,rgba(0,0,0,.55));
+}
+
+/* ---------- the spine ---------- */
+.gf-spine{
+  position:relative;
+  background:linear-gradient(90deg,
+    rgba(0,0,0,.6), rgba(227,211,179,.07) 42%, rgba(227,211,179,.07) 58%, rgba(0,0,0,.6));
+  border-top:1px solid rgba(227,211,179,.12);
+  border-bottom:1px solid rgba(227,211,179,.12);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.gf-spine-text{
+  writing-mode:vertical-rl;
+  font-family:'Courier Prime',monospace;font-size:8px;letter-spacing:.22em;
+  text-transform:uppercase;color:rgba(227,211,179,.42);white-space:nowrap;
+  opacity:calc(1 - var(--gf-open) * .55);
+}
+
+/* ---------- page furniture ---------- */
+.gf-page-head{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.gf-side{
+  font-family:'Barlow Semi Condensed',sans-serif;text-transform:uppercase;
+  font-weight:600;letter-spacing:.2em;font-size:10px;color:var(--brass);
+  border:1px solid rgba(201,154,63,.5);border-radius:2px;padding:3px 7px;line-height:1;
+  flex-shrink:0;
+}
+.gf-rule{flex:1;height:1px;background:linear-gradient(90deg,rgba(201,154,63,.45),transparent);}
+.gf-kicker{
+  font-family:'Courier Prime',monospace;font-size:9.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--manila-dim);flex-shrink:0;
+}
+.gf-title{
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:600;
+  font-size:clamp(19px,2.1vw,24px);letter-spacing:-.02em;line-height:1.15;
+  margin:10px 0 24px;
+}
+.gf-h4{
+  font-family:'Barlow Semi Condensed',sans-serif;text-transform:uppercase;
+  font-weight:600;letter-spacing:.2em;font-size:11px;color:var(--brass);
+  margin-bottom:13px;padding-bottom:7px;
+  border-bottom:1px solid rgba(227,211,179,.13);
+}
+.gf-block + .gf-block{margin-top:28px;}
+
+/* ---------- LEFT: experience ---------- */
+.gf-xp{display:flex;flex-direction:column;gap:26px;}
+.gf-entry{position:relative;padding-left:38px;}
+/* the catalogue tag in the margin */
+.gf-entry-side{
+  position:absolute;left:0;top:2px;
+  font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.1em;
+  color:var(--manila-dim);
+}
+/* the timeline the entries hang from */
+.gf-entry::before{
+  content:'';position:absolute;left:25px;top:5px;bottom:-26px;width:1px;
+  background:linear-gradient(180deg,rgba(227,211,179,.22),rgba(227,211,179,.04));
+}
+.gf-entry:last-child::before{display:none;}
+.gf-entry::after{
+  content:'';position:absolute;left:22px;top:4px;width:7px;height:7px;border-radius:50%;
+  background:rgba(227,211,179,.28);box-shadow:0 0 0 3px rgba(30,24,21,.9);
+}
+.gf-entry.is-current::after{
+  background:var(--brass);box-shadow:0 0 0 3px rgba(30,24,21,.9),0 0 9px rgba(201,154,63,.8);
+}
+
+.gf-role{
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:17px;
+  letter-spacing:-.015em;line-height:1.25;display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;
+}
+.gf-now{
+  font-family:'Courier Prime',monospace;font-size:8.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:#0F1A12;background:var(--brass);
+  border-radius:2px;padding:2px 6px;line-height:1;
+}
+.gf-co{
+  font-size:14px;color:var(--brass);margin-top:3px;
+}
+.gf-meta{
+  font-family:'Courier Prime',monospace;font-size:10.5px;color:var(--manila-dim);
+  margin-top:5px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+}
+.gf-meta i{width:3px;height:3px;border-radius:50%;background:currentColor;opacity:.5;display:block;}
+.gf-bullets{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:8px;}
+.gf-bullets li{
+  position:relative;padding-left:16px;font-size:14px;line-height:1.55;color:rgba(227,211,179,.82);
+}
+.gf-bullets li::before{
+  content:'';position:absolute;left:1px;top:7px;width:5px;height:5px;
+  border-top:1.5px solid var(--brass);border-right:1.5px solid var(--brass);
+  transform:rotate(45deg);opacity:.8;
+}
+.gf-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:13px;}
+.gf-chip{
+  font-family:'Courier Prime',monospace;font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--manila-dim);
+  border:1px solid rgba(227,211,179,.18);border-radius:100px;
+  padding:4px 9px;line-height:1;
+}
+
+/* ---------- RIGHT: skills ---------- */
+.gf-skills{display:flex;flex-direction:column;gap:15px;}
+.gf-sgroup{display:grid;grid-template-columns:104px 1fr;gap:12px;align-items:baseline;}
+.gf-sname{
+  font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--manila-dim);line-height:1.5;
+}
+.gf-sitems{display:flex;flex-wrap:wrap;gap:5px;}
+.gf-sitem{
+  font-size:12.5px;line-height:1;padding:5px 9px;border-radius:3px;
+  background:rgba(227,211,179,.055);border:1px solid rgba(227,211,179,.13);
+  color:rgba(227,211,179,.88);
+}
+@media(max-width:1000px){
+  .gf-sgroup{grid-template-columns:1fr;gap:6px;}
+}
+
+/* ---------- RIGHT: education ---------- */
+.gf-edu{display:flex;flex-direction:column;gap:15px;}
+.gf-ed{
+  border-left:2px solid rgba(201,154,63,.4);padding-left:13px;
+}
+.gf-ed-cred{font-weight:600;font-size:14.5px;line-height:1.3;}
+.gf-ed-school{font-size:13.5px;color:var(--brass);margin-top:2px;}
+.gf-ed-meta{
+  font-family:'Courier Prime',monospace;font-size:10px;color:var(--manila-dim);margin-top:4px;
+}
+.gf-ed-detail{font-size:13px;color:rgba(227,211,179,.7);margin-top:6px;line-height:1.5;}
+
+/* ---------- RIGHT: about ---------- */
+.gf-about p{font-size:14px;line-height:1.62;color:rgba(227,211,179,.82);}
+.gf-about p + p{margin-top:10px;}
+.gf-facts{
+  margin-top:16px;display:grid;grid-template-columns:auto 1fr;gap:7px 14px;
+  padding-top:14px;border-top:1px dashed rgba(227,211,179,.16);
+}
+.gf-facts dt{
+  font-family:'Courier Prime',monospace;font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--manila-dim);padding-top:2px;
+}
+.gf-facts dd{font-size:13.5px;color:rgba(227,211,179,.88);}
+
+/* ---------- the hint ---------- */
+.gf-hint{
+  text-align:center;margin-top:20px;
+  font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--manila-dim);
+  opacity:calc(1 - var(--gf-open) * 1.6);
+  transition:opacity .2s linear;pointer-events:none;
+}
+
+/* =========================================================
+   NARROW SCREENS
+   A two-page 3D spread doesn't survive a phone. The pages
+   stack and the fold becomes a hinge along the top edge —
+   same idea, same scroll driver, one column.
+   ========================================================= */
+@media(max-width:860px){
+  .gatefold{perspective:1400px;perspective-origin:50% 30%;}
+  .gf-stage{
+    grid-template-columns:1fr;
+    transform:scale(calc(.975 + .025 * var(--gf-open)));
+  }
+  .gf-left,.gf-right{
+    transform-origin:50% 0%;
+    transform:rotateX(calc(-52deg + 52deg * var(--gf-open)));
+  }
+  .gf-left .gf-paper,.gf-right .gf-paper{border-radius:7px;border:1px solid rgba(227,211,179,.13);}
+  .gf-paper::after{
+    top:auto;bottom:0;left:0;right:0;width:auto;height:38%;
+    background:linear-gradient(0deg,transparent,rgba(0,0,0,.5));
+  }
+  .gf-spine{
+    height:16px;
+    background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(227,211,179,.06),rgba(0,0,0,.55));
+    border-left:1px solid rgba(227,211,179,.12);
+    border-right:1px solid rgba(227,211,179,.12);
+    border-top:none;border-bottom:none;
+  }
+  .gf-spine-text{writing-mode:horizontal-tb;font-size:7.5px;}
+  .gf-paper{padding:28px 22px 30px;}
+}
+
+/* Anyone who asked for less motion gets the spread flat and still. */
+@media (prefers-reduced-motion:reduce){
+  .gatefold{--gf-open:1 !important;perspective:none;}
+  .gf-stage,.gf-left,.gf-right{transform:none !important;}
+  .gf-hint{display:none;}
+}

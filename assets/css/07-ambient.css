@@ -65,23 +65,107 @@
   animation:ambSpin 190s linear infinite reverse;
 }
 
-/* ===== SPEAKERS ===== */
-.speakers-band::before{
-  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
-  opacity:.6;
-  background:radial-gradient(ellipse 60% 70% at 50% 50%, rgba(201,154,63,.10), transparent 68%);
-  animation:ambPulse 9s ease-in-out infinite;
+/* ===== THE OUTRO — SPEAKERS + CONTACT, ONE BACKGROUND =====
+   These used to be two sections with two separate ambient stacks, so the
+   effects stopped dead at the seam between them. Now .outro wraps both and
+   owns the whole backdrop: one wash, one shaft of light, grooves that
+   straddle the join, and ripples that leave the speaker cones and roll
+   down over the form. Section padding is untouched — the sections sit
+   exactly where they did, they just share what's behind them.
+
+   Stacking: .outro is the only clipper. .outro-bg sits at z-index 0 and
+   .speakers-band / .contact are both z-index 1 (set in 02-chrome.css),
+   so every layer here paints behind both sections' content. */
+.outro{position:relative;z-index:1;overflow:hidden;}
+.outro-bg{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  overflow:hidden;
+}
+.outro-bg > span{position:absolute;display:block;pointer-events:none;}
+
+/* one continuous colour field: brass gathers around the speakers up top,
+   teal and oxblood pool down around the form */
+.ob-wash{
+  inset:-12%;
+  opacity:.72;
+  background:
+    /* a single soft body of light spanning both, so the seam disappears */
+    radial-gradient(ellipse 92% 58% at 50% 52%, rgba(201,154,63,.055), transparent 72%),
+    radial-gradient(ellipse 62% 20% at 50% 10%, rgba(201,154,63,.16),  transparent 66%),
+    radial-gradient(ellipse 50% 24% at 88% 42%, rgba(44,101,112,.15),  transparent 64%),
+    radial-gradient(ellipse 58% 30% at 14% 72%, rgba(201,154,63,.14),  transparent 64%),
+    radial-gradient(ellipse 50% 26% at 78% 90%, rgba(124,43,49,.14),   transparent 64%);
+  animation:ambDriftA 32s ease-in-out infinite alternate-reverse;
 }
 
-/* ===== CONTACT ===== */
-.contact{overflow:hidden;}
-.contact::before{
-  content:'';position:absolute;inset:-15%;z-index:-1;pointer-events:none;
-  opacity:.55;
-  background:
-    radial-gradient(ellipse 520px 340px at 16% 78%, rgba(201,154,63,.11), transparent 62%),
-    radial-gradient(ellipse 480px 320px at 86% 22%, rgba(44,101,112,.12), transparent 62%);
-  animation:ambDriftA 30s ease-in-out infinite alternate-reverse;
+/* record grooves parked ON the seam, so the eye reads the speakers and
+   the form as one panel rather than two stacked blocks */
+.ob-groove{
+  border-radius:50%;
+  background:repeating-radial-gradient(circle at center,
+    transparent 0 11px, rgba(227,211,179,.10) 11px 12px);
+  mask-image:radial-gradient(circle at center,#000 38%,transparent 70%);
+  -webkit-mask-image:radial-gradient(circle at center,#000 38%,transparent 70%);
+}
+.ob-groove-a{
+  width:720px;height:720px;right:-300px;top:6%;
+  opacity:.13;
+  animation:ambSpin 170s linear infinite;
+}
+.ob-groove-b{
+  width:600px;height:600px;left:-250px;bottom:-6%;
+  opacity:.10;
+  animation:ambSpin 210s linear infinite reverse;
+}
+
+/* a single shaft of light travelling the full height of both sections */
+.ob-shaft{
+  top:-30%;bottom:-30%;left:-30%;width:24%;
+  background:linear-gradient(90deg,transparent,rgba(227,211,179,.055),transparent);
+  animation:ambShaft 26s ease-in-out infinite;
+}
+
+/* ---- ripples off the cones ----
+   Anchored to the speaker row itself, so they always start at the right
+   spot, and no longer clipped at the bottom of the speakers band — they
+   expand right down across the contact form. Alternating brass and teal
+   so they pick up the wash as they travel. */
+.spk-row{position:relative;}
+.spk-field{
+  position:absolute;top:50%;left:50%;
+  width:520px;height:520px;margin:-260px 0 0 -260px;
+  z-index:-1;pointer-events:none;
+}
+.spk-field i{
+  position:absolute;inset:0;border-radius:50%;display:block;
+  border:1px solid rgba(201,154,63,.22);
+  animation:obRipple 11s ease-out infinite;
+}
+.spk-field i:nth-child(2){border-color:rgba(44,101,112,.22);animation-delay:2.75s;}
+.spk-field i:nth-child(3){border-color:rgba(201,154,63,.18);animation-delay:5.5s;}
+.spk-field i:nth-child(4){border-color:rgba(227,211,179,.13);animation-delay:8.25s;}
+
+@keyframes obRipple{
+  0%  {transform:scale(.28);opacity:0;}
+  12% {opacity:.55;}
+  70% {opacity:.16;}
+  100%{transform:scale(3.2);opacity:0;}
+}
+
+/* On a phone the form stacks under the speakers and the whole block gets
+   taller, so the rings need more reach and the grooves need to pull in. */
+@media(max-width:700px){
+  .spk-field{width:380px;height:380px;margin:-190px 0 0 -190px;}
+  .spk-field i{animation-name:obRippleSm;}
+  .ob-groove-a{width:460px;height:460px;right:-210px;}
+  .ob-groove-b{width:420px;height:420px;left:-190px;}
+  .ob-shaft{width:38%;}
+}
+@keyframes obRippleSm{
+  0%  {transform:scale(.3);opacity:0;}
+  12% {opacity:.5;}
+  70% {opacity:.14;}
+  100%{transform:scale(4.4);opacity:0;}
 }
 
 /* ===== PANELS =====
@@ -157,31 +241,10 @@
   animation:ambDust 90s linear infinite;
 }
 
-/* ---- soundwaves leaving the speakers ---- */
-.speakers-band::after{
-  content:'';position:absolute;top:50%;left:50%;z-index:-1;pointer-events:none;
-  width:340px;height:340px;margin:-170px 0 0 -170px;border-radius:50%;
-  border:1px solid rgba(201,154,63,.20);
-  animation:ambRipple 7s ease-out infinite;
-}
-.speakers-band .spk-mid::before,
-.speakers-band .spk-mid::after{
-  content:'';position:absolute;top:50%;left:50%;z-index:-1;pointer-events:none;
-  width:340px;height:340px;margin:-170px 0 0 -170px;border-radius:50%;
-  border:1px solid rgba(201,154,63,.16);
-  animation:ambRipple 7s ease-out infinite;
-}
-.speakers-band .spk-mid::before{animation-delay:2.3s;}
-.speakers-band .spk-mid::after{animation-delay:4.6s;}
+/* The speaker ripples and the contact shaft of light used to live here as
+   two unrelated effects. They're now part of the shared .outro backdrop
+   above — see "THE OUTRO". */
 .speakers-band .spk-mid{position:relative;}
-
-/* ---- a slow shaft of light across the contact panel ---- */
-.contact::after{
-  content:'';position:absolute;z-index:-1;pointer-events:none;
-  top:-40%;bottom:-40%;left:-30%;width:22%;
-  background:linear-gradient(90deg,transparent,rgba(227,211,179,.05),transparent);
-  animation:ambShaft 23s ease-in-out infinite;
-}
 
 /* ---- run-out groove at the very bottom ---- */
 footer{position:relative;overflow:hidden;}
@@ -226,11 +289,6 @@ footer::before{
   from{transform:translate3d(0,0,0);}
   to{transform:translate3d(-120px,-190px,0);}
 }
-@keyframes ambRipple{
-  0%{transform:scale(.35);opacity:0;}
-  18%{opacity:.55;}
-  100%{transform:scale(1.5);opacity:0;}
-}
 @keyframes ambShaft{
   0%{transform:translateX(0) rotate(14deg);}
   55%{transform:translateX(700%) rotate(14deg);}
@@ -240,10 +298,9 @@ footer::before{
 /* Decorative extras go away for anyone who asked for less motion. */
 @media (prefers-reduced-motion:reduce){
   .turntable-section::after,
-  .speakers-band::after,
-  .speakers-band .spk-mid::before,
-  .speakers-band .spk-mid::after,
-  .contact::after,
+  .spk-field,
+  .ob-groove,
+  .ob-shaft,
   footer::before,
   .plinth-top::before,
   .faceplate::before{display:none;}

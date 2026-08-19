@@ -150,3 +150,44 @@ $('scDual').addEventListener('click', () => {
   $('scDual').classList.toggle('on', scope.dual);
   $('scDual').setAttribute('aria-pressed', String(scope.dual));
 });
+
+/* ---------- minimize / restore ----------
+   On a phone the control pill covers a good chunk of the hero, so it
+   starts collapsed down to a single dot and opens on tap. On a desktop
+   there's room, so it starts open. Either way the dot is part of
+   .scope-ctl, which means 09-main.js still shows and hides it with the
+   hero — it never trails you into the rest of the page.
+
+   `scMinTouched` records whether the visitor has made the call
+   themselves; once they have, resizing the window stops overriding it. */
+const scopeCtlEl = $('scopeCtl');
+const scMinBtn   = $('scMin');
+const scNarrow   = window.matchMedia('(max-width: 700px)');
+
+let scopeMinimized = scNarrow.matches;
+let scMinTouched   = false;
+
+function applyScopeMin(){
+  scopeCtlEl.classList.toggle('is-min', scopeMinimized);
+  scMinBtn.setAttribute('aria-expanded', String(!scopeMinimized));
+  const label = scopeMinimized ? 'Show oscilloscope controls' : 'Hide oscilloscope controls';
+  scMinBtn.setAttribute('aria-label', label);
+  scMinBtn.title = label;
+}
+applyScopeMin();
+
+scMinBtn.addEventListener('click', () => {
+  scopeMinimized = !scopeMinimized;
+  scMinTouched = true;
+  applyScopeMin();
+});
+
+/* rotating the phone or resizing re-picks the sensible default,
+   but only for someone who hasn't already chosen */
+const onScBreakpoint = e => {
+  if(scMinTouched) return;
+  scopeMinimized = e.matches;
+  applyScopeMin();
+};
+if(scNarrow.addEventListener) scNarrow.addEventListener('change', onScBreakpoint);
+else if(scNarrow.addListener) scNarrow.addListener(onScBreakpoint);   // older Safari

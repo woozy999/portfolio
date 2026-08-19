@@ -54,8 +54,14 @@
 .np-bar{
   position:fixed;left:0;right:0;bottom:0;z-index:120;
   transform:translateY(115%);transition:transform .45s var(--ease);
-  background:linear-gradient(180deg,var(--walnut-hi),var(--walnut) 40%,var(--walnut-lo));
-  background-image:var(--grain);
+  /* Both layers, in one declaration. These used to be two: a `background`
+     shorthand carrying the walnut gradient, then `background-image` on the
+     next line — which replaced it, since the shorthand only sets
+     background-image. The bar was left with nothing but the translucent
+     grain and the page showed straight through it. */
+  background-color:var(--walnut);
+  background-image:var(--grain),
+    linear-gradient(180deg,var(--walnut-hi),var(--walnut) 40%,var(--walnut-lo));
   border-top:1px solid rgba(0,0,0,.6);
   box-shadow:0 -18px 44px -20px rgba(0,0,0,.9);
   padding:9px 0 calc(9px + env(safe-area-inset-bottom,0px));
@@ -187,4 +193,37 @@ body.np-open .scope-ctl{bottom:104px;}
   .crate-head{gap:10px;}
   .genre-chip{padding:6px 10px;font-size:10px;letter-spacing:.06em;}
   .crate-shuffle{padding:6px 12px;font-size:10px;}
+}
+/* ===== WHEN SPOTIFY CAN'T LOAD =====
+   Ad blockers, tracker-blocking browsers and Spotify CDN outages all stop
+   the embed script from arriving. 10-spotify.js sets .sp-blocked on <body>
+   when that happens; the player is swapped for a direct link so the bar
+   still does something useful instead of sitting there pretending. */
+.np-fallback{display:none;}
+body.sp-blocked .np-embed{display:none;}
+body.sp-blocked .np-fallback{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;justify-content:center;gap:2px;
+  padding:7px 13px;border-radius:8px;
+  background:rgba(0,0,0,.25);
+  border:1px solid rgba(227,211,179,.16);
+  transition:border-color .25s var(--ease),background .25s var(--ease);
+}
+body.sp-blocked .np-fallback:hover{
+  border-color:rgba(201,154,63,.6);background:rgba(201,154,63,.10);
+}
+.npf-msg{
+  font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--manila-dim);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.npf-cta{
+  font-size:13px;font-weight:600;color:var(--brass);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+/* skip buttons are meaningless with no player behind them */
+body.sp-blocked #npPrev,
+body.sp-blocked #npNext{display:none;}
+@media(max-width:460px){
+  .npf-msg{display:none;}
 }

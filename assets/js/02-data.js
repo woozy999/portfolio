@@ -174,3 +174,102 @@ const crate = [
   /* ---- jazz ---- */
      { id:'1cpANF6zMBoFoxkoIjZHjv', title:'Skating In Central Park', artist:'Bill Evans, Jim Hall', genre:'jazz', note:'All-time favorite' },
 ];
+/* ================================================================
+   4. THE LINER NOTES — your experience, skills, education and bio.
+
+   This is the gatefold section that unfolds above the tracklist.
+   Everything in it is generated from the four blocks below, so the
+   markup in index.html never needs touching — add or remove entries
+   here and the layout follows.
+
+   LEFT PAGE  = `experience`
+   RIGHT PAGE = `skills`, then `education`, then `about`
+
+   All of it is placeholder text. Replace it with the real thing.
+   ================================================================ */
+
+/* --- LEFT PAGE: work history, newest first ---
+   `side`    a short catalogue-style tag shown in the margin (A1, A2, …)
+   `period`  keep it short; it's set in monospace and shouldn't wrap
+   `current` true puts a lit lamp next to the role
+   `bullets` 2–4 lines. Lead with the outcome, not the tooling.
+   `stack`   chips under the entry. 3–5 works best visually. */
+const experience = [
+  {
+    side:'A1', current:true,
+    role:'Data Analyst',
+    company:'Your Current Employer',
+    period:'2024 — Present',
+    location:'City, ST',
+    bullets:[
+      'Replace this with what you own — the reporting, the domain, the people who depend on it.',
+      'Replace this with a result. A number beats an adjective every time.',
+      'Replace this with something only you did — a process you rebuilt, a bad metric you killed.'
+    ],
+    stack:['SQL','Python','Tableau','Excel']
+  },
+  {
+    side:'A2',
+    role:'Previous Title',
+    company:'Previous Employer',
+    period:'2022 — 2024',
+    location:'City, ST',
+    bullets:[
+      'Replace with the scope of the role in one line.',
+      'Replace with the thing you shipped that outlived you.'
+    ],
+    stack:['SQL','Power BI','Excel']
+  },
+  {
+    side:'A3',
+    role:'Earliest Title',
+    company:'Earliest Employer',
+    period:'2021 — 2022',
+    location:'City, ST',
+    bullets:[
+      'Replace with where you started and what you picked up there.'
+    ],
+    stack:['Excel','SQL']
+  }
+];
+
+/* --- RIGHT PAGE, block 1: skills, grouped like a personnel credit ---
+   Keep to 3–4 groups. Long lists read as filler on a portfolio. */
+const skills = [
+  { group:'Query & Modeling', items:['SQL (Postgres, T-SQL)','dbt','Data modeling','Window functions'] },
+  { group:'Analysis',         items:['Python','pandas','NumPy','A/B testing','Regression'] },
+  { group:'Reporting',        items:['Tableau','Power BI','Excel','Looker Studio'] },
+  { group:'Working practice', items:['Git','Stakeholder interviews','Metric definition','Documentation'] }
+];
+
+/* --- RIGHT PAGE, block 2: education & certifications --- */
+const education = [
+  {
+    school:'Your University',
+    credential:'B.S. in Your Major',
+    period:'2017 — 2021',
+    detail:'Replace with a concentration, honour, or relevant coursework — or delete this line.'
+  },
+  {
+    school:'Certification Body',
+    credential:'Certification Name',
+    period:'2023',
+    detail:'Replace or delete.'
+  }
+];
+
+/* --- RIGHT PAGE, block 3: the bio ---
+   `paras` are the sleeve notes. Two short paragraphs beats one long one.
+   `facts` is the little credits table underneath. */
+const about = {
+  paras:[
+    'Replace this with who you are in your own voice — not a resume summary. What kind of problems pull you in, and what you are like to work with.',
+    'Replace this with the second half: what you are looking for next, and why someone should press play on the tracklist below.'
+  ],
+  facts:[
+    { k:'Based in',   v:'City, ST' },
+    { k:'Status',     v:'Open to analyst roles' },
+    { k:'Best at',    v:'Turning a vague ask into a clear number' },
+    { k:'Off the clock', v:'Digging through crates' }
+  ]
+};

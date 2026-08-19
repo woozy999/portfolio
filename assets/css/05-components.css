@@ -1,7 +1,10 @@
 /* Components — speakers, modals, contact form, footer */
 
 /* ===== SPEAKERS ===== */
-.speakers-band{padding:68px 0 76px;border-top:1px solid rgba(227,211,179,.09);overflow:hidden;}
+/* No overflow:hidden here on purpose. The ripples that leave the cones are
+   meant to carry on down over the contact form, and .outro (07-ambient.css)
+   is the single clipper for both sections now. Padding is unchanged. */
+.speakers-band{padding:68px 0 76px;border-top:1px solid rgba(227,211,179,.09);}
 .spk-row{display:flex;align-items:center;justify-content:center;gap:clamp(18px,6vw,72px);}
 .spk-mid{text-align:center;max-width:330px;}
 .spk-mid .eyebrow{justify-content:center;}
