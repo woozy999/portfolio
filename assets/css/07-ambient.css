@@ -168,17 +168,8 @@
   100%{transform:scale(4.4);opacity:0;}
 }
 
-/* ===== PANELS =====
-   The tracklist panel is a large flat box; a very slow sheen keeps it
-   from reading as dead space. */
-.panel{position:relative;overflow:hidden;}
-.panel::before{
-  content:'';position:absolute;top:-60%;bottom:-60%;left:-40%;width:28%;
-  pointer-events:none;z-index:0;
-  background:linear-gradient(90deg,transparent,rgba(227,211,179,.045),transparent);
-  animation:ambSheen 17s ease-in-out infinite;
-}
-.panel > *{position:relative;z-index:1;}
+/* The old flat .panel and its sheen are gone — the tracklist is a
+   receiver face now and carries its own specular pass (09-receiver.css). */
 
 /* ===== KEYFRAMES ===== */
 @keyframes ambDriftA{
@@ -213,8 +204,7 @@
    durations; this also parks the layers at a sensible resting state.) */
 @media (prefers-reduced-motion:reduce){
   .jukebox-section::after,
-  .rotation-section::after,
-  .panel::before{display:none;}
+  .rotation-section::after{display:none;}
 }
 
 /* =========================================================
@@ -263,14 +253,16 @@ footer::before{
    Both of these already clip their contents, so the highlight stays
    on the faceplate. .faceplate and .plinth-top use ::after for the
    brushed texture, so the sheen goes on ::before. */
-.plinth-top::before,
 .faceplate::before{
   content:'';position:absolute;top:-60%;bottom:-60%;left:-45%;width:26%;
   z-index:1;pointer-events:none;
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent);
   animation:ambSheen 21s ease-in-out infinite;
 }
-.plinth-top::before{animation-duration:26s;animation-delay:3s;}
+/* The turntable's sheen is NOT here. .plinth-top can't use overflow:hidden
+   — clipping would flatten the 3D scene — so an unclipped pseudo-element on
+   it escapes across the whole page. It lives on its own clipping child
+   instead; see .plinth-sheen in 10-deck.css. */
 
 /* ---- a breath of light inside the speaker cabinets ---- */
 .spk-baffle::after{
@@ -302,6 +294,5 @@ footer::before{
   .ob-groove,
   .ob-shaft,
   footer::before,
-  .plinth-top::before,
   .faceplate::before{display:none;}
 }

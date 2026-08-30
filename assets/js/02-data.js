@@ -175,101 +175,97 @@ const crate = [
      { id:'1cpANF6zMBoFoxkoIjZHjv', title:'Skating In Central Park', artist:'Bill Evans, Jim Hall', genre:'jazz', note:'All-time favorite' },
 ];
 /* ================================================================
-   4. THE LINER NOTES — your experience, skills, education and bio.
+   4. THE LINER NOTES — experience, skills, education and bio.
 
-   This is the gatefold section that unfolds above the tracklist.
-   Everything in it is generated from the four blocks below, so the
-   markup in index.html never needs touching — add or remove entries
-   here and the layout follows.
+   Drives the gatefold section above the tracklist. The markup in
+   index.html is generated from these four blocks, so adding a role or
+   a skill group is a one-file edit.
 
    LEFT PAGE  = `experience`
    RIGHT PAGE = `skills`, then `education`, then `about`
-
-   All of it is placeholder text. Replace it with the real thing.
    ================================================================ */
 
 /* --- LEFT PAGE: work history, newest first ---
-   `side`    a short catalogue-style tag shown in the margin (A1, A2, …)
-   `period`  keep it short; it's set in monospace and shouldn't wrap
-   `current` true puts a lit lamp next to the role
-   `bullets` 2–4 lines. Lead with the outcome, not the tooling.
-   `stack`   chips under the entry. 3–5 works best visually. */
+   `side`    catalogue-style tag shown in the margin
+   `current` true puts a lit lamp and an "On air" badge on the role
+   `stack`   chips under the entry; 4-5 reads best */
 const experience = [
   {
     side:'A1', current:true,
-    role:'Data Analyst',
-    company:'Your Current Employer',
-    period:'2024 — Present',
-    location:'City, ST',
+    role:'Junior Customer Operations Analyst',
+    company:'TeamViewer',
+    period:'Jan 2026 — Present',
+    location:'Clearwater, FL',
     bullets:[
-      'Replace this with what you own — the reporting, the domain, the people who depend on it.',
-      'Replace this with a result. A number beats an adjective every time.',
-      'Replace this with something only you did — a process you rebuilt, a bad metric you killed.'
+      'Rebuilt the enterprise forecast across AMS, EMEA and APAC — automated the data pull and wrote validation rules that auto-flag accounts with missing or anomalous data. Accuracy went from 70% to 99.5%, with quarterly variance under 1% on forecasts presented to leadership.',
+      'As Planhat Administrator, consolidated manual workflows into a single dashboard surfacing account health, usage trends and renewal risk. Cut time-to-insight by 89% for a 30+ person global CSM team and saved an estimated 1,400 hours a year.',
+      'Built Power BI and Salesforce dashboards giving Sales, Retention and CSM self-serve views of GRR, NRR and pipeline KPIs in place of manual bulk pulls, cutting KPI reporting time by 72%. As Salesforce Administrator, wrote SOQL to extract and validate reporting data and built Flows automating record assignment and field updates.',
+      'Used AI tooling (Claude Code, ChatGPT, Microsoft Copilot) to automate recurring data pulls and speed up report delivery — including a Chrome extension for customer credit calculations used by global sales teams, and a Python tool that automates opportunity assignment for global retention.'
     ],
-    stack:['SQL','Python','Tableau','Excel']
+    stack:['Power BI','Salesforce','SQL','Python','Planhat']
   },
   {
     side:'A2',
-    role:'Previous Title',
-    company:'Previous Employer',
-    period:'2022 — 2024',
-    location:'City, ST',
+    role:'Sales Operations Intern',
+    company:'TeamViewer',
+    period:'Jan 2025 — Jan 2026',
+    location:'Clearwater, FL',
     bullets:[
-      'Replace with the scope of the role in one line.',
-      'Replace with the thing you shipped that outlived you.'
+      'Automated 12+ Customer Success workflows in Microsoft Power Automate, cutting manual assignment time by 83% — roughly 300 hours a year for the retention team.',
+      'Analyzed sales, customer usage and support ticket data in Microsoft Dynamics, Excel and Tableau to build custom dashboards, pipeline reports and revenue trend insights.'
     ],
-    stack:['SQL','Power BI','Excel']
+    stack:['Power Automate','Dynamics 365','Tableau','Excel']
   },
   {
     side:'A3',
-    role:'Earliest Title',
-    company:'Earliest Employer',
-    period:'2021 — 2022',
-    location:'City, ST',
+    role:'Community Ambassador',
+    company:'Landmark Properties',
+    period:'Oct 2022 — Jan 2025',
+    location:'Tampa, FL',
     bullets:[
-      'Replace with where you started and what you picked up there.'
+      'Recognized as a top-performing leasing agent — ran the end-to-end leasing cycle in the Entrata property management system and secured 500+ new tenant leases, contributing directly to 100% occupancy at The Standard Tampa.',
+      'Built and launched a custom browser extension for The Standard Tampa to streamline resident communication; it was adopted as a standard tool by the entire leasing team.'
     ],
-    stack:['Excel','SQL']
+    stack:['Entrata','Process automation']
   }
 ];
 
-/* --- RIGHT PAGE, block 1: skills, grouped like a personnel credit ---
-   Keep to 3–4 groups. Long lists read as filler on a portfolio. */
+/* --- RIGHT PAGE, block 1: skills, grouped like a personnel credit --- */
 const skills = [
-  { group:'Query & Modeling', items:['SQL (Postgres, T-SQL)','dbt','Data modeling','Window functions'] },
-  { group:'Analysis',         items:['Python','pandas','NumPy','A/B testing','Regression'] },
-  { group:'Reporting',        items:['Tableau','Power BI','Excel','Looker Studio'] },
-  { group:'Working practice', items:['Git','Stakeholder interviews','Metric definition','Documentation'] }
+  { group:'Languages',    items:['Python','pandas','NumPy','Matplotlib','SQL','SOQL','DAX','HTML / CSS'] },
+  { group:'Analytics',    items:['Power BI','Tableau','Excel','Claude Code','Microsoft Copilot','ChatGPT'] },
+  { group:'Platforms',    items:['Salesforce','Microsoft Dynamics 365','Planhat','Power Automate','Microsoft 365'] },
+  { group:'Focus',        items:['Forecasting','Data validation','Business intelligence','Workflow automation','Revenue analytics','Data auditing'] }
 ];
 
-/* --- RIGHT PAGE, block 2: education & certifications --- */
+/* --- RIGHT PAGE, block 2: education --- */
 const education = [
   {
-    school:'Your University',
-    credential:'B.S. in Your Major',
-    period:'2017 — 2021',
-    detail:'Replace with a concentration, honour, or relevant coursework — or delete this line.'
+    school:'University of South Florida',
+    credential:'B.S. in Information Science',
+    period:'Dec 2025 · Tampa, FL',
+    detail:'Concentration in Information Security.'
   },
   {
-    school:'Certification Body',
-    credential:'Certification Name',
-    period:'2023',
-    detail:'Replace or delete.'
+    school:'Delta Tau Delta',
+    credential:'Fraternity Alumnus',
+    period:'University of South Florida',
+    detail:'Leadership roles including New Member Educator, Recruitment Chair and Social Chair.'
   }
 ];
 
 /* --- RIGHT PAGE, block 3: the bio ---
-   `paras` are the sleeve notes. Two short paragraphs beats one long one.
-   `facts` is the little credits table underneath. */
+   This is the one part that isn't lifted from the resume, so it's the
+   part worth rewriting in your own voice. */
 const about = {
   paras:[
-    'Replace this with who you are in your own voice — not a resume summary. What kind of problems pull you in, and what you are like to work with.',
-    'Replace this with the second half: what you are looking for next, and why someone should press play on the tracklist below.'
+    'I’m a data analyst at TeamViewer, where I look after the enterprise forecast and the reporting that our Sales, Retention and CSM teams run on. Most of my work is the unglamorous half of analytics — validating the data, automating the pull, and making sure the number on the dashboard is one somebody can defend in a leadership meeting.',
+    'The problems I like best are the ones currently locked inside someone’s manual spreadsheet process. I’m open to analyst roles where I can keep building self-serve reporting people actually trust — ideally somewhere the data is messy enough to stay interesting.'
   ],
   facts:[
-    { k:'Based in',   v:'City, ST' },
-    { k:'Status',     v:'Open to analyst roles' },
-    { k:'Best at',    v:'Turning a vague ask into a clear number' },
+    { k:'Based in',      v:'Tampa Bay, FL' },
+    { k:'Currently',     v:'Analyst at TeamViewer' },
+    { k:'Best at',       v:'Turning a manual reporting process into something self-serve' },
     { k:'Off the clock', v:'Digging through crates' }
   ]
 };

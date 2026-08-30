@@ -26,7 +26,8 @@ function setTrack(idx){
   $('platterRpm').textContent = 'Track ' + (idx + 1) + ' of ' + ttItems.length;
   if(isMobileTT()){
     platterArm.classList.remove('no-tween');
-    platterArm.style.transform = 'rotate(' + lerp(-28, -6, idx/(ttItems.length - 1)) + 'deg)';
+    platterArm.style.setProperty('--arm-rot',
+      lerp(-28, -6, idx/(ttItems.length - 1)).toFixed(2) + 'deg');
   }
 }
 
@@ -52,6 +53,39 @@ function sizeTT(){
 }
 sizeTT();
 setTrack(0);
+
+/* ---------- deck parallax ----------
+   A few degrees of lean toward the pointer. It's what makes the platter
+   read as a physical object rather than a picture of one — the arm sits
+   24px above the record in Z, so the two visibly shift against each other.
+   Pointer only: on touch there's no hover to track, and the CSS tilt
+   already stands the deck up on its own. */
+const deckScene = $('deckScene'), deckTilt = $('deckTilt');
+if(deckScene && deckTilt && !reduceMotion && window.matchMedia('(hover:hover)').matches){
+  let deckRaf = null;
+  const setDeck = (mx, my) => {
+    deckTilt.style.setProperty('--deck-mx', mx.toFixed(3));
+    deckTilt.style.setProperty('--deck-my', my.toFixed(3));
+  };
+
+  deckScene.addEventListener('pointermove', e => {
+    if(deckRaf) return;
+    deckRaf = requestAnimationFrame(() => {
+      deckRaf = null;
+      const r = deckScene.getBoundingClientRect();
+      if(!r.width || !r.height) return;
+      setDeck(
+        clamp(((e.clientX - r.left) / r.width  - 0.5) * 2, -1, 1),
+        clamp(((e.clientY - r.top)  / r.height - 0.5) * 2, -1, 1)
+      );
+    });
+  });
+
+  deckScene.addEventListener('pointerleave', () => {
+    if(deckRaf){ cancelAnimationFrame(deckRaf); deckRaf = null; }
+    setDeck(0, 0);
+  });
+}
 
 /* single debounced resize handler for everything */
 let resizeTimer = null;

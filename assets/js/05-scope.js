@@ -152,20 +152,17 @@ $('scDual').addEventListener('click', () => {
 });
 
 /* ---------- minimize / restore ----------
-   On a phone the control pill covers a good chunk of the hero, so it
-   starts collapsed down to a single dot and opens on tap. On a desktop
-   there's room, so it starts open. Either way the dot is part of
-   .scope-ctl, which means 09-main.js still shows and hides it with the
-   hero — it never trails you into the rest of the page.
+   The pill always starts collapsed, on every screen size — it's a toy, not
+   a control anyone needs on arrival, and at full width it covered a good
+   chunk of the hero. It opens on click and stays open until it's closed
+   again or you scroll away from the hero.
 
-   `scMinTouched` records whether the visitor has made the call
-   themselves; once they have, resizing the window stops overriding it. */
+   The dot is part of .scope-ctl, which means 09-main.js still shows and
+   hides the whole thing with the hero — it never trails down the page. */
 const scopeCtlEl = $('scopeCtl');
 const scMinBtn   = $('scMin');
-const scNarrow   = window.matchMedia('(max-width: 700px)');
 
-let scopeMinimized = scNarrow.matches;
-let scMinTouched   = false;
+let scopeMinimized = true;
 
 function applyScopeMin(){
   scopeCtlEl.classList.toggle('is-min', scopeMinimized);
@@ -178,16 +175,15 @@ applyScopeMin();
 
 scMinBtn.addEventListener('click', () => {
   scopeMinimized = !scopeMinimized;
-  scMinTouched = true;
   applyScopeMin();
 });
 
-/* rotating the phone or resizing re-picks the sensible default,
-   but only for someone who hasn't already chosen */
-const onScBreakpoint = e => {
-  if(scMinTouched) return;
-  scopeMinimized = e.matches;
-  applyScopeMin();
-};
-if(scNarrow.addEventListener) scNarrow.addEventListener('change', onScBreakpoint);
-else if(scNarrow.addListener) scNarrow.addListener(onScBreakpoint);   // older Safari
+/* Scrolling out of the hero puts it away again, so coming back to the top
+   doesn't leave a panel open that you opened minutes ago and forgot. */
+window.addEventListener('scroll', () => {
+  if(scopeMinimized) return;
+  if(!scopeCtlEl.classList.contains('show')){
+    scopeMinimized = true;
+    applyScopeMin();
+  }
+}, { passive:true });

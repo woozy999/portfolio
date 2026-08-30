@@ -9,6 +9,8 @@ const heroDisc = $('heroDisc'), heroSleeve = $('heroSleeve'), rigTilt = $('rigTi
 const hint = $('unsleeveHint'), railHead = $('railHead'), navDisc = $('navDisc');
 const scopeCtl = $('scopeCtl');
 const woofers = Array.prototype.slice.call(document.querySelectorAll('.woof'));
+const discSheen = document.querySelector('.disc-sheen');
+const platterLabel = document.querySelector('.platter-label');
 
 let spin = 0, lastY = window.scrollY, vel = 0;
 let mx = 0, my = 0, tmx = 0, tmy = 0;
@@ -72,15 +74,26 @@ function frame(now){
     woofers[i].style.transform = 'scale(' + (pump - i*0.004) + ')';
   }
 
-  /* ---- sticky turntable ---- */
+  /* ---- sticky turntable ----
+     The disc and the arm are positioned in 3D by CSS; only their rotation
+     comes from here, handed over as a custom property so the translateZ
+     that gives the deck its depth survives. */
   if(!isMobileTT()){
     const r = ttScroll.getBoundingClientRect();
     const total = r.height - vh;
     if(total > 0){
       const p = clamp(-r.top/total, 0, 1);
       const inView = r.top < vh && r.bottom > 0;
-      platterDisc.style.transform = 'rotate(' + (spin * (inView ? 1 : 0.35)) + 'deg)';
-      platterArm.style.transform  = 'rotate(' + lerp(-30, -4, p) + 'deg)';
+      const discDeg = spin * (inView ? 1 : 0.35);
+      platterDisc.style.setProperty('--disc-spin', discDeg.toFixed(2) + 'deg');
+      /* Two things ride on the record but shouldn't turn with it: the
+         highlight is a fixed reflection, and the label is a readout —
+         a track name whipping round upside down is no use to anyone.
+         Both get turned back by exactly what the record turned forward. */
+      const counter = (-discDeg).toFixed(2) + 'deg';
+      if(discSheen)   discSheen.style.transform = 'rotate(' + counter + ')';
+      if(platterLabel) platterLabel.style.setProperty('--label-counter', counter);
+      platterArm.style.setProperty('--arm-rot', lerp(-30, -4, p).toFixed(2) + 'deg');
       setTrack(Math.floor(p * ttItems.length));
     }
   }
