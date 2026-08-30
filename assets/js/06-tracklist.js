@@ -5,6 +5,12 @@
    TRACKLIST + MODALS
    ================================================================ */
 const grid = $('trackGrid'), overlay = $('overlay');
+
+/* SHOW_PROJECTS (01-config.js). The CSS in 01-base.css does the hiding;
+   this stops the 16 selectors, the dial, the meters and the flicker
+   timer from being built at all when there's nothing to show. Defaults
+   to on if the flag is missing, so an older config still works. */
+const PROJECTS_ON = (typeof SHOW_PROJECTS === 'undefined') ? true : !!SHOW_PROJECTS;
 const playerCard = $('playerCard'), fullOverlay = $('fullOverlay');
 let current = null, loadTimer = null, lastFocus = null;
 
@@ -30,7 +36,7 @@ const rcvInputs  = [];
 /* project codes are A1..D4 — the letter is the bank */
 const bankOf = code => String(code || '').charAt(0).toUpperCase();
 
-projects.forEach((p, i) => {
+if(PROJECTS_ON) projects.forEach((p, i) => {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'rcv-input ' + (p.active ? 'is-loaded' : 'is-empty');
@@ -65,7 +71,7 @@ projects.forEach((p, i) => {
    One major tick per slot plus minors between them, so the scale always
    matches however many projects are in 02-data.js. */
 (function buildTicks(){
-  if(!rcvTicks) return;
+  if(!PROJECTS_ON || !rcvTicks) return;
   const n = projects.length;
   if(!n) return;
   let html = '';
@@ -146,7 +152,7 @@ if(receiver){
    A real signal meter never sits perfectly still. Nudging the needle on a
    slow timer (CSS handles the easing) is much cheaper than animating it
    frame by frame, and reads more like ballistics than a tween. */
-if(!reduceMotion && mtrSignal){
+if(PROJECTS_ON && !reduceMotion && mtrSignal){
   setInterval(() => {
     if(cuedSlot !== -1) return;                 // hands off while tuning
     if(!receiver || !isOnScreen(receiver)) return;
@@ -163,7 +169,7 @@ function isOnScreen(el){
   return r.bottom > -80 && r.top < window.innerHeight + 80;
 }
 
-if(!reduceMotion && receiver){
+if(PROJECTS_ON && !reduceMotion && receiver){
   const flickerTargets = () => {
     const lamps = Array.prototype.slice.call(
       receiver.querySelectorAll('.rcv-lamp.is-on, .rcv-input.is-loaded'));

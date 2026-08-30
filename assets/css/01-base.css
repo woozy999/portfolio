@@ -53,3 +53,17 @@ button{font-family:inherit;cursor:pointer;}
 }
 .eyebrow::before{content:'';width:22px;height:1px;background:var(--brass);opacity:.7;}
 .eyebrow.center{justify-content:center;}
+
+/* =========================================================
+   FEATURE FLAG — SHOW_PROJECTS (assets/js/01-config.js)
+
+   The inline script in <head> puts .no-projects on <html> when the flag
+   is false. One rule then hides the tracklist section and everything
+   that links to it, so no nav item or button is left pointing at a
+   section that isn't on the page.
+
+   display:none also takes these out of the tab order and the
+   accessibility tree, so a hidden tracklist is genuinely gone rather
+   than just invisible.
+   ========================================================= */
+.no-projects [data-needs-projects]{display:none !important;}

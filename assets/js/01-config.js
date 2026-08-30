@@ -32,3 +32,21 @@ const LINKS = [
 /* Which of the above appear on the record sleeve in the hero. Keep this
    short — three is the sweet spot for a 240px sleeve. */
 const SLEEVE_LINKS = ['linkedin', 'resume', 'email'];
+
+/* ================================================================
+   SHOW_PROJECTS — the tracklist on/off switch.
+
+   false takes the whole tracklist section off the site: the receiver
+   panel, the "Tracklist" link in the nav, and the "Browse the
+   tracklist" button in the hero all go, so nothing is left pointing at
+   a section that isn't there. Everything else — liner notes, toolkit,
+   rotation, contact — is untouched.
+
+   Your projects stay exactly where they are in `projects` further down
+   in 02-data.js; nothing is deleted. Flip this back to true and they
+   all come back.
+
+   NOTE: this is JavaScript, so it's lowercase true / false — not
+   Python's True / False. Capitalised, the page will throw.
+   ================================================================ */
+const SHOW_PROJECTS = false;

@@ -21,6 +21,17 @@
 <link rel="stylesheet" href="assets/css/08-liner.css">
 <link rel="stylesheet" href="assets/css/09-receiver.css">
 <link rel="stylesheet" href="assets/css/10-deck.css">
+
+<!-- Config is loaded here, not with the other scripts at the end of the
+     body, so SHOW_PROJECTS can be applied before the first paint. Left
+     until the end it would set the class after the browser had already
+     drawn the tracklist, and you'd see it flash in and vanish. -->
+<script src="assets/js/01-config.js"></script>
+<script>
+  if(typeof SHOW_PROJECTS !== 'undefined' && !SHOW_PROJECTS){
+    document.documentElement.classList.add('no-projects');
+  }
+</script>
 </head>
 <body>
 
@@ -93,7 +104,7 @@
     <a href="#top" class="brand"><span class="disc" id="navDisc" aria-hidden="true"></span><span class="brand-text">Kyle Offenbacher<span class="full liner"> // data analyst</span></span></a>
     <div class="nav-links">
       <a href="#liner">Liner notes</a>
-      <a href="#work">Tracklist</a>
+      <a href="#work" data-needs-projects>Tracklist</a>
       <a href="#toolkit">Toolkit</a>
       <a href="#rotation">Rotation</a>
       <a href="#contact">Contact</a>
@@ -117,7 +128,7 @@
       <p class="sub fade-up d1">I'm <strong>Kyle Offenbacher</strong>, a data analyst with experience in SQL, Python, and more. This portfolio is set up like a jukebox - pick a track, hear the project. Liner notes always included.</p>
       <div class="status fade-up d2"><span class="dot"></span>Open to new analyst roles</div>
       <div class="hero-cta fade-up d3">
-        <a href="#work" class="btn btn-solid">Browse the tracklist</a>
+        <a href="#work" class="btn btn-solid" data-needs-projects>Browse the tracklist</a>
         <a href="#contact" class="btn">Get in touch →</a>
       </div>
     </div>
@@ -223,7 +234,7 @@
      glow, empty ones stay dark. The dial pointer and the signal meter track
      whichever slot you're on, and 06-tracklist.js flickers the lamps at
      random the way warm gear does. Clicking a lit slot opens the project. -->
-<section class="jukebox-section" id="work">
+<section class="jukebox-section" id="work" data-needs-projects>
   <div class="wrap">
     <div class="sec-head center reveal">
       <div class="eyebrow center">The tracklist</div>
@@ -649,7 +660,6 @@
   </div>
 </div>
 <!-- Scripts load in this order; later files use values defined in earlier ones. -->
-<script src="assets/js/01-config.js"></script>
 <script src="assets/js/02-data.js"></script>
 <script src="assets/js/03-utils.js"></script>
 <script src="assets/js/04-ambient.js"></script>
