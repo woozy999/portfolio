@@ -49,4 +49,4 @@ const SLEEVE_LINKS = ['linkedin', 'resume', 'email'];
    NOTE: this is JavaScript, so it's lowercase true / false — not
    Python's True / False. Capitalised, the page will throw.
    ================================================================ */
-const SHOW_PROJECTS = false;
+const SHOW_PROJECTS = true;

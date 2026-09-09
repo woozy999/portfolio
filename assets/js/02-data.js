@@ -6,13 +6,12 @@
    ================================================================ */
 const projects = [
   { code:'A1', active:true, accent:'#C99A3F',
-    track:'Churn in a Minor Key',
-    real:'Customer Retention Analysis',
-    short:'Found the behavioral signals that predicted churn 30 days out.',
-    problem:'Replace this with the actual business problem — who was hurting, what decision was blocked, and why nobody could answer it before you.',
-    approach:['The data you pulled and joined','The analysis method you used and why','How you validated it','How you delivered it'],
-    result:'Replace with the outcome. Use a real number if you have one.',
-    tags:['SQL','Python','Tableau'], link:'#' },
+    track:'Opportunity Pulls and Forecasting',
+    real:'Optimizing opportunity data pulls',
+    problem:'Had little insight into what opportunities were tied to what accounts and an easy way to see all opportunities tied to specific account numbers.',
+    approach:['Created a custom PowerBI report','Scheduled a data refresh daily for updated and accurate information','Created visualizations for easy interpretation','Easy to use interface for the team to use'],
+    result:'Quicker and more accurate way to pull opportunity data for the team, which led to more accurate forecasting and better decision making.',
+    tags:['PowerBI','Salesforce'], link:'#' },
   { code:'A2', active:true, accent:'#2C6570',
     track:'Live from the Dashboard',
     real:'Executive KPI Dashboard',
@@ -192,7 +191,7 @@ const crate = [
 const experience = [
   {
     side:'A1', current:true,
-    role:'Junior Customer Operations Analyst',
+    role:'Customer Operations Analyst',
     company:'TeamViewer',
     period:'Jan 2026 — Present',
     location:'Clearwater, FL',

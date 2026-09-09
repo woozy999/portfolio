@@ -4,15 +4,15 @@
 /* ================================================================
    TRACKLIST + MODALS
    ================================================================ */
-const grid = $('trackGrid'), overlay = $('overlay');
+const grid = $('trackGrid');
 
 /* SHOW_PROJECTS (01-config.js). The CSS in 01-base.css does the hiding;
    this stops the 16 selectors, the dial, the meters and the flicker
    timer from being built at all when there's nothing to show. Defaults
    to on if the flag is missing, so an older config still works. */
 const PROJECTS_ON = (typeof SHOW_PROJECTS === 'undefined') ? true : !!SHOW_PROJECTS;
-const playerCard = $('playerCard'), fullOverlay = $('fullOverlay');
-let current = null, loadTimer = null, lastFocus = null;
+const fullOverlay = $('fullOverlay');
+let current = null, lastFocus = null;
 
 $('loadedCount').textContent = projects.filter(p => p.active).length + ' of ' + projects.length + ' loaded';
 
@@ -56,7 +56,7 @@ if(PROJECTS_ON) projects.forEach((p, i) => {
     btn.setAttribute('aria-label', 'Slot ' + p.code + ' — no input connected');
   } else {
     btn.setAttribute('aria-label', 'Select ' + p.code + ' — ' + p.track);
-    btn.addEventListener('click', () => openPlayer(p, btn));
+    btn.addEventListener('click', () => openFull(p, btn));
   }
 
   /* tuning follows the pointer and the keyboard alike */
@@ -215,64 +215,65 @@ function lockScroll(on){
   document.body.style.overflow = on ? 'hidden' : '';
 }
 
-function openPlayer(p, sourceBtn){
+/* Project image. Set image:'assets/img/whatever.png' on a project in
+   02-data.js and it fills the banner at the top of the write-up. Leave it
+   off and the banner falls back to the accent-colour gradient it always
+   had, so projects without a screenshot still look finished.
+   Optional extras: imageAlt (screen-reader text) and imageCaption (a
+   visible line under the picture). */
+function setArt(p){
+  const art = $('fullArt');
+  const has = !!(p.image && String(p.image).trim());
+
+  art.style.setProperty('--accent', p.accent);
+  art.style.backgroundImage = has ? 'url("' + p.image + '")' : '';
+  art.classList.toggle('has-img', has);
+  if(has){
+    art.setAttribute('role', 'img');
+    art.setAttribute('aria-label', p.imageAlt || (p.real || p.track) + ' \u2014 screenshot');
+  }else{
+    art.removeAttribute('role');
+    art.removeAttribute('aria-label');
+  }
+
+  /* Caption sits under the banner. Built on demand so index.html doesn't
+     need an empty element sitting in it doing nothing. */
+  let cap = document.querySelector('.full-cap');
+  if(has && p.imageCaption){
+    if(!cap){
+      cap = document.createElement('p');
+      cap.className = 'full-cap';
+      art.insertAdjacentElement('afterend', cap);
+    }
+    cap.textContent = p.imageCaption;
+    cap.hidden = false;
+  }else if(cap){
+    cap.hidden = true;
+  }
+}
+
+/* Open a project. Wired straight to the selector click — there used to be
+   an intermediate "now playing" card in between with a Read the liner
+   notes button on it, but making someone press twice to reach the actual
+   work was a cost with no payoff. */
+function openFull(p, sourceBtn){
+  if(!p) return;
   current = p;
   lastFocus = sourceBtn || document.activeElement;
-  clearTimeout(loadTimer);
-  playerCard.style.setProperty('--accent', p.accent);
-  overlay.classList.add('is-open');
-  playerCard.classList.remove('is-ready');
-  playerCard.classList.add('is-loading');
-  lockScroll(true);
-  $('npLabel').textContent = 'Loading ' + p.code + ' · cueing up…';
-  $('vinylLabel').textContent = p.code;
-  $('playerTitle').textContent = p.track;
-  $('playerReal').textContent = p.real;
-  $('playerDesc').textContent = p.short;
-  $('playerTags').innerHTML = p.tags.map(t => '<span>' + t + '</span>').join('');
-  loadTimer = setTimeout(() => {
-    playerCard.classList.remove('is-loading');
-    playerCard.classList.add('is-ready');
-    $('npLabel').textContent = 'Now playing · ' + p.code;
-    $('closeModal').focus();
-  }, 1050);
-}
-
-function closePlayer(){
-  overlay.classList.remove('is-open');
-  clearTimeout(loadTimer);
-  if(!fullOverlay.classList.contains('is-open')){
-    lockScroll(false);
-    if(lastFocus) { try{ lastFocus.focus(); }catch(_){} }
-  }
-  setTimeout(() => playerCard.classList.remove('is-loading','is-ready'), 320);
-}
-
-$('closeModal').addEventListener('click', closePlayer);
-$('anotherBtn').addEventListener('click', closePlayer);
-overlay.addEventListener('click', e => { if(e.target === overlay) closePlayer(); });
-
-$('viewFullBtn').addEventListener('click', () => {
-  if(!current) return;
-  const p = current;
   fullOverlay.style.setProperty('--accent', p.accent);
   $('fullCode').textContent  = 'Track ' + p.code;
   $('fullTitle').textContent = p.track;
   $('fullReal').textContent  = p.real;
-  $('fullArt').style.setProperty('--accent', p.accent);
+  setArt(p);
   $('fullProblem').textContent = p.problem;
   $('fullApproach').innerHTML  = p.approach.map(a => '<li>' + a + '</li>').join('');
   $('fullResult').textContent  = p.result;
   $('fullTags').innerHTML = p.tags.map(t => '<span>' + t + '</span>').join('');
-  $('fullLink').href = p.link;
-  overlay.classList.remove('is-open');
-  clearTimeout(loadTimer);
-  setTimeout(() => playerCard.classList.remove('is-loading','is-ready'), 320);
   fullOverlay.classList.add('is-open');
   lockScroll(true);
   fullOverlay.scrollTop = 0;
   $('fullClose').focus();
-});
+}
 
 function closeFull(){
   fullOverlay.classList.remove('is-open');
@@ -283,9 +284,7 @@ $('fullClose').addEventListener('click', closeFull);
 $('fullBack').addEventListener('click', closeFull);
 
 document.addEventListener('keydown', e => {
-  if(e.key !== 'Escape') return;
-  if(fullOverlay.classList.contains('is-open')) closeFull();
-  else if(overlay.classList.contains('is-open')) closePlayer();
+  if(e.key === 'Escape' && fullOverlay.classList.contains('is-open')) closeFull();
 });
 
 /* ---------- reveal ---------- */
